@@ -17,7 +17,10 @@ function Toolbar({ className, ...props }: ToolbarPrimitive.Root.Props) {
   );
 }
 
-function ToolbarButton({ className, ...props }: ToolbarPrimitive.Button.Props) {
+function ToolbarToggleButton({
+  className,
+  ...props
+}: ToolbarPrimitive.Button.Props) {
   return (
     <ToolbarPrimitive.Button
       data-slot="toolbar-button"
@@ -77,7 +80,7 @@ export {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
-  ToolbarButton,
+  ToolbarToggleButton,
   ToolbarLink,
   ToolbarInput,
 };

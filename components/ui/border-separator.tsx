@@ -20,6 +20,22 @@ export function BorderSeparator({
   );
 }
 
+export function FixedBorderSeparator({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      aria-hidden="true"
+      className={cn("pointer-events-none border-t border-dashed", className)}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function DashedLines({
   width = 20,
   height = 50,
