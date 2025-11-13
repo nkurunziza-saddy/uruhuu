@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "autocomplete",
+  "type": "registry:ui",
+  "description": "An input field that provides suggestions as the user types.",
+  "registryDependencies": ["input", "scroll-area"],
+  "files": [
+    {
+      "path": "components/ui/autocomplete.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/autocomplete.tsx"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/registry/new-york/libs/utils";
 import Link from "next/link";
 import { GithubIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -79,7 +79,7 @@ export default function RootLayout({
             className={cn(
               "container relative grow",
               "before:-inset-y-20 before:-left-px before:absolute before:z-1 before:border-border before:border-dashed xl:before:border-l",
-              "after:-inset-y-20 after:-right-px after:absolute after:z-1 after:border-border after:border-dashed xl:after:border-r"
+              "after:-inset-y-20 after:-right-px after:absolute after:z-1 after:border-border after:border-dashed xl:after:border-r",
             )}
           >
             {children}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "type": "registry:ui",
+  "description": "A breadcrumb navigation.",
+  "files": [
+    {
+      "path": "components/ui/breadcrumb.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/breadcrumb.tsx"
+    }
+  ]
+}

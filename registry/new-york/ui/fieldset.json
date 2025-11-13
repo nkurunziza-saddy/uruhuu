@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fieldset",
+  "type": "registry:ui",
+  "description": "A fieldset component.",
+  "files": [
+    {
+      "path": "components/ui/fieldset.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/fieldset.tsx"
+    }
+  ]
+}

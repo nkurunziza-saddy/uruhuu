@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "frame",
+  "type": "registry:ui",
+  "description": "A frame component.",
+  "files": [
+    {
+      "path": "components/ui/frame.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/frame.tsx"
+    }
+  ]
+}

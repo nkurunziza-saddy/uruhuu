@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-group",
+  "type": "registry:ui",
+  "description": "A group of checkboxes.",
+  "files": [
+    {
+      "path": "components/ui/checkbox-group.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/checkbox-group.tsx"
+    }
+  ]
+}

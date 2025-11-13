@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "type": "registry:ui",
+  "description": "A scroll area component.",
+  "files": [
+    {
+      "path": "components/ui/scroll-area.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/scroll-area.tsx"
+    }
+  ]
+}

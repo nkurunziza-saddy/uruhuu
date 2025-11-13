@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-field",
+  "type": "registry:ui",
+  "description": "A number field component.",
+  "registryDependencies": ["label"],
+  "files": [
+    {
+      "path": "components/ui/number-field.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/number-field.tsx"
+    }
+  ]
+}

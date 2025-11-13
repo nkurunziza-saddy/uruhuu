@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-dialog",
+  "type": "registry:ui",
+  "description": "A modal dialog that interrupts the user with important content and expects a response.",
+  "files": [
+    {
+      "path": "components/ui/alert-dialog.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/alert-dialog.tsx"
+    }
+  ]
+}

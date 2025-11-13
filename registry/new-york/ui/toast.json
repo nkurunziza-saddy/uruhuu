@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "type": "registry:ui",
+  "description": "A toast component.",
+  "registryDependencies": ["button"],
+  "files": [
+    {
+      "path": "components/ui/toast.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/toast.tsx"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "meter",
+  "type": "registry:ui",
+  "description": "A meter component.",
+  "files": [
+    {
+      "path": "components/ui/meter.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/meter.tsx"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "group",
+  "type": "registry:ui",
+  "description": "A group component.",
+  "registryDependencies": ["separator"],
+  "files": [
+    {
+      "path": "components/ui/group.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/group.tsx"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "border-separator",
+  "type": "registry:ui",
+  "description": "A separator with a border.",
+  "files": [
+    {
+      "path": "components/ui/border-separator.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/border-separator.tsx"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu",
+  "type": "registry:ui",
+  "description": "A menu component.",
+  "files": [
+    {
+      "path": "components/ui/menu.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/menu.tsx"
+    }
+  ]
+}

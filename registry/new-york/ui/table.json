@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table",
+  "type": "registry:ui",
+  "description": "A table component.",
+  "files": [
+    {
+      "path": "components/ui/table.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/table.tsx"
+    }
+  ]
+}

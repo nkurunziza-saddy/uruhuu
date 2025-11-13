@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "type": "registry:ui",
+  "description": "A vertically stacking set of interactive headings that each reveal a section of content.",
+  "files": [
+    {
+      "path": "components/ui/accordion.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/accordion.tsx"
+    }
+  ]
+}

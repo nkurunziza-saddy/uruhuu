@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form",
+  "type": "registry:ui",
+  "description": "A form component.",
+  "files": [
+    {
+      "path": "components/ui/form.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/form.tsx"
+    }
+  ]
+}

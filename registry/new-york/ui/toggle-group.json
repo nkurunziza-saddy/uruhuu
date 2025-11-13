@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group",
+  "type": "registry:ui",
+  "description": "A toggle group component.",
+  "registryDependencies": ["separator", "toggle"],
+  "files": [
+    {
+      "path": "components/ui/toggle-group.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/toggle-group.tsx"
+    }
+  ]
+}

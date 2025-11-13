@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar",
+  "type": "registry:ui",
+  "description": "A toolbar component.",
+  "files": [
+    {
+      "path": "components/ui/toolbar.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/toolbar.tsx"
+    }
+  ]
+}

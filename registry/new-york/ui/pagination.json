@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "type": "registry:ui",
+  "description": "A pagination component.",
+  "registryDependencies": ["button"],
+  "files": [
+    {
+      "path": "components/ui/pagination.tsx",
+      "content": "",
+      "type": "registry:ui",
+      "target": "components/ui/pagination.tsx"
+    }
+  ]
+}
