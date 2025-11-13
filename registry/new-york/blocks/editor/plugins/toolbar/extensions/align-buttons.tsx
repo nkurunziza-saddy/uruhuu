@@ -1,10 +1,14 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { FORMAT_ELEMENT_COMMAND } from "lexical";
-import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
-import { ToolbarButton } from "@/components/blocks/editor/plugins/toolbar/extensions/toolbar-button";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight } from "lucide-react";
+import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
+import { ToolbarButton } from "./toolbar-button";
 
 export function AlignButtons() {
   const [editor] = useLexicalComposerContext();
@@ -16,7 +20,7 @@ export function AlignButtons() {
   return (
     <Menu>
       <MenuTrigger
-        render={<ToolbarButton title="Text Alignment" icon={AlignLeft} />}
+        render={<ToolbarButton icon={AlignLeft} title="Text Alignment" />}
       />
 
       <MenuPopup
@@ -24,29 +28,29 @@ export function AlignButtons() {
         className="animate-in slide-in-from-top-2 duration-200"
       >
         <MenuItem
-          onClick={() => formatElement("left")}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => formatElement("left")}
         >
           <AlignLeft className="mr-2 size-4" />
           Left
         </MenuItem>
         <MenuItem
-          onClick={() => formatElement("center")}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => formatElement("center")}
         >
           <AlignCenter className="mr-2 size-4" />
           Center
         </MenuItem>
         <MenuItem
-          onClick={() => formatElement("right")}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => formatElement("right")}
         >
           <AlignRight className="mr-2 size-4" />
           Right
         </MenuItem>
         <MenuItem
-          onClick={() => formatElement("justify")}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => formatElement("justify")}
         >
           <AlignJustify className="mr-2 size-4" />
           Justify

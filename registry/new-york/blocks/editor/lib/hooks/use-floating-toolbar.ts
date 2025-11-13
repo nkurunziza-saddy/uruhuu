@@ -1,12 +1,12 @@
-import { useState, useCallback, useEffect, useRef } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { mergeRegister } from "@lexical/utils";
 import {
   $getSelection,
   $isRangeSelection,
-  SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_LOW,
+  SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { mergeRegister } from "@lexical/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Position {
   top: number;
@@ -177,8 +177,8 @@ export function useFloatingToolbar(): UseFloatingToolbarReturn {
           updateToolbar();
           return false;
         },
-        COMMAND_PRIORITY_LOW
-      )
+        COMMAND_PRIORITY_LOW,
+      ),
     );
   }, [editor, updateToolbar]);
 

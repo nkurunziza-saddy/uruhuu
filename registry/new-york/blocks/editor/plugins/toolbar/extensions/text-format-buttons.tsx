@@ -1,8 +1,8 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import type { LexicalCommand } from "lexical";
+import type { ToolbarState } from "..";
 import { TEXT_FORMAT_ITEMS } from "../toolbar-items";
 import { ToolbarToggleButton } from "./toolbar-button";
-import { ToolbarState } from "..";
-import { LexicalCommand } from "lexical";
 
 export function TextFormatButtons({
   toolbarState,
@@ -20,8 +20,7 @@ export function TextFormatButtons({
     <>
       {TEXT_FORMAT_ITEMS.map((item) => (
         <ToolbarToggleButton
-          key={item.name}
-          onClick={() => handleClick(item.command, item.payload)}
+          icon={item.icon}
           isActive={
             !!toolbarState[
               `is${
@@ -29,7 +28,8 @@ export function TextFormatButtons({
               }` as keyof ToolbarState
             ]
           }
-          icon={item.icon}
+          key={item.name}
+          onClick={() => handleClick(item.command, item.payload)}
           title={item.name}
         />
       ))}

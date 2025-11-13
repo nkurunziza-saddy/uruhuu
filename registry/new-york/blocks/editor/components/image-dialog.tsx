@@ -1,16 +1,16 @@
-import type React from "react";
-import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
+import type React from "react";
+import { useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/registry/new-york/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/registry/new-york/ui/dialog";
+import { Input } from "@/registry/new-york/ui/input";
+import { Label } from "@/registry/new-york/ui/label";
 
 export function ImageDialog({
   isOpen,
@@ -55,7 +55,7 @@ export function ImageDialog({
   return (
     <>
       {isOpen && (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog onOpenChange={onClose} open={isOpen}>
           <DialogContent
             aria-describedby="image-dialog"
             className="sm:max-w-md backdrop-blur-md bg-background/95"
@@ -67,39 +67,39 @@ export function ImageDialog({
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSubmit}>
                   <div>
-                    <Label htmlFor="image-url" className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor="image-url">
                       Image URL
                     </Label>
                     <Input
+                      className="mt-1.5"
                       id="image-url"
-                      value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-1.5"
+                      value={url}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="image-alt" className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor="image-alt">
                       Alt Text (optional)
                     </Label>
                     <Input
+                      className="mt-1.5"
                       id="image-alt"
-                      value={alt}
                       onChange={(e) => setAlt(e.target.value)}
                       placeholder="Describe the image"
-                      className="mt-1.5"
+                      value={alt}
                     />
                   </div>
                   <div className="flex gap-2 justify-end">
-                    <Button type="button" variant="outline" onClick={onClose}>
+                    <Button onClick={onClose} type="button" variant="outline">
                       Cancel
                     </Button>
                     <Button
-                      type="submit"
-                      disabled={!url.trim()}
                       className="bg-primary hover:bg-primary/90"
+                      disabled={!url.trim()}
+                      type="submit"
                     >
                       Insert Image
                     </Button>
@@ -119,17 +119,17 @@ export function ImageDialog({
 
                 <div>
                   <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
                     accept="image/*"
                     className="hidden"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    type="file"
                   />
                   <Button
-                    type="button"
-                    variant="outline"
                     className="w-full hover:bg-accent/80 transition-colors bg-transparent"
                     onClick={() => fileInputRef.current?.click()}
+                    type="button"
+                    variant="outline"
                   >
                     <Upload className="size-4 mr-2" />
                     Upload from Computer

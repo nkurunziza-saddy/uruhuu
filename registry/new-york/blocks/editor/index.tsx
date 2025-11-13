@@ -1,27 +1,27 @@
 "use client";
-import type React from "react";
-import { useState, useCallback } from "react";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { TRANSFORMERS } from "@lexical/markdown";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
-import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
-import TableHoverActionsPlugin from "./plugins/table-hover-actions";
-import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import SlashCommandPlugin from "./plugins/slash-command";
-import { TRANSFORMERS } from "@lexical/markdown";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import type { EditorState, LexicalEditor } from "lexical";
+import type React from "react";
+import { useCallback, useState } from "react";
 import { EDITOR_CONFIG } from "./lib/configs";
-import { Toolbar } from "./plugins/toolbar";
-import { FloatingToolbar } from "./plugins/floating-toolbar";
 import type { EditorProps } from "./lib/types/editor";
-import { type EditorState, type LexicalEditor } from "lexical";
+import { FloatingToolbar } from "./plugins/floating-toolbar";
+import SlashCommandPlugin from "./plugins/slash-command";
+import TableHoverActionsPlugin from "./plugins/table-hover-actions";
+import { Toolbar } from "./plugins/toolbar";
 
 function EditorContent({
   placeholder = "Start writing ...",
@@ -52,16 +52,16 @@ function EditorContent({
               transition-all duration-300
               ${className}
             `}
-            style={editorStyle}
             readOnly={readOnly}
+            style={editorStyle}
           />
         }
+        ErrorBoundary={LexicalErrorBoundary}
         placeholder={
           <div className="absolute top-6 md:top-8 left-6 md:left-8 text-muted-foreground/60 pointer-events-none select-none text-base md:text-lg">
             {placeholder}
           </div>
         }
-        ErrorBoundary={LexicalErrorBoundary}
       />
     </div>
   );
@@ -77,7 +77,7 @@ function EditorPlugins({
   onChange: (
     editorState: EditorState,
     editor: LexicalEditor,
-    tags: Set<string>
+    tags: Set<string>,
   ) => void;
 }) {
   return (
@@ -91,8 +91,8 @@ function EditorPlugins({
       <HorizontalRulePlugin />
       {/* Table plugins - order matters! */}
       <TablePlugin
-        hasCellMerge={true}
         hasCellBackgroundColor={true}
+        hasCellMerge={true}
         hasTabHandler={true}
       />
       <TableHoverActionsPlugin />
@@ -135,7 +135,7 @@ export function Editor({
       setEditorState(jsonString);
       onChange?.(jsonString);
     },
-    [onChange]
+    [onChange],
   );
 
   return (
@@ -145,16 +145,16 @@ export function Editor({
           {showToolbar && <Toolbar />}
 
           <EditorContent
-            placeholder={placeholder}
-            minHeight={minHeight}
             maxHeight={maxHeight}
+            minHeight={minHeight}
+            placeholder={placeholder}
             readOnly={readOnly}
           />
 
           <EditorPlugins
-            showFloatingToolbar={showFloatingToolbar}
             customPlugins={plugins}
             onChange={handleEditorChange}
+            showFloatingToolbar={showFloatingToolbar}
           />
         </div>
       </LexicalComposer>

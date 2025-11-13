@@ -1,14 +1,14 @@
 import type React from "react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/registry/new-york/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/registry/new-york/ui/dialog";
+import { Input } from "@/registry/new-york/ui/input";
+import { Label } from "@/registry/new-york/ui/label";
 
 export function TableDialog({
   isOpen,
@@ -31,7 +31,7 @@ export function TableDialog({
   return (
     <>
       {isOpen && (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog onOpenChange={onClose} open={isOpen}>
           <DialogContent
             aria-describedby="table-dialog"
             className="sm:max-w-md backdrop-blur-md bg-background/95"
@@ -42,52 +42,52 @@ export function TableDialog({
                   Insert Table
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="rows" className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor="rows">
                       Rows
                     </Label>
                     <Input
+                      className="mt-1.5"
                       id="rows"
-                      type="number"
-                      min="1"
                       max="20"
-                      value={rows}
+                      min="1"
                       onChange={(e) =>
                         setRows(
-                          Math.max(1, Number.parseInt(e.target.value) || 1)
+                          Math.max(1, Number.parseInt(e.target.value) || 1),
                         )
                       }
-                      className="mt-1.5"
+                      type="number"
+                      value={rows}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="columns" className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor="columns">
                       Columns
                     </Label>
                     <Input
+                      className="mt-1.5"
                       id="columns"
-                      type="number"
-                      min="1"
                       max="20"
-                      value={columns}
+                      min="1"
                       onChange={(e) =>
                         setColumns(
-                          Math.max(1, Number.parseInt(e.target.value) || 1)
+                          Math.max(1, Number.parseInt(e.target.value) || 1),
                         )
                       }
-                      className="mt-1.5"
+                      type="number"
+                      value={columns}
                     />
                   </div>
                 </div>
                 <div className="flex gap-2 justify-end">
-                  <Button type="button" variant="outline" onClick={onClose}>
+                  <Button onClick={onClose} type="button" variant="outline">
                     Cancel
                   </Button>
                   <Button
-                    type="submit"
                     className="bg-primary hover:bg-primary/90"
+                    type="submit"
                   >
                     Insert Table
                   </Button>

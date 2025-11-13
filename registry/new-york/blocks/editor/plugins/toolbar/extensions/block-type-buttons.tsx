@@ -1,5 +1,5 @@
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $createCodeNode } from "@lexical/code";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $createQuoteNode } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 import {
@@ -7,9 +7,9 @@ import {
   $getSelection,
   $isRangeSelection,
 } from "lexical";
+import type { ToolbarState } from "..";
 import { BLOCK_FORMAT_ITEMS } from "../toolbar-items";
 import { ToolbarToggleButton } from "./toolbar-button";
-import { ToolbarState } from "..";
 
 const BLOCK_TYPE_ITEMS = BLOCK_FORMAT_ITEMS.filter((item) => item.format);
 
@@ -42,10 +42,10 @@ export function BlockTypeButtons({
       {BLOCK_TYPE_ITEMS.map((item) => {
         return (
           <ToolbarToggleButton
+            icon={item.icon}
+            isActive={toolbarState.blockType === item.name}
             key={item.name}
             onClick={() => onClickHandler(item.format!)}
-            isActive={toolbarState.blockType === item.name}
-            icon={item.icon}
             title={item.name}
           />
         );

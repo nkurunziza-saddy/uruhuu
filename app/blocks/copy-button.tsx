@@ -7,7 +7,7 @@ import {
   MenuItem,
   MenuPopup,
   MenuTrigger,
-} from "@/components/ui/menu";
+} from "@/registry/new-york/ui/menu";
 import { useState } from "react";
 
 export const CopyButton = ({

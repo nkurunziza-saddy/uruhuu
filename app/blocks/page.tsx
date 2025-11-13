@@ -1,8 +1,8 @@
 import {
   BorderSeparator,
   FixedBorderSeparator,
-} from "@/components/ui/border-separator";
-import { Editor } from "@/components/blocks/editor";
+} from "@/registry/new-york/ui/border-separator";
+import { Editor } from "@/registry/new-york/blocks/editor";
 import { CopyButton } from "./copy-button";
 
 export default function Home() {

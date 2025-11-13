@@ -1,5 +1,5 @@
-import { nodes } from "./nodes";
 import EditorTheme from "./editor-theme";
+import { nodes } from "./nodes";
 
 function onError(error: Error) {
   console.error("Lexical error:", error);

@@ -1,35 +1,34 @@
-import { createPortal } from "react-dom";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $patchStyleText } from "@lexical/selection";
 import {
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
   type TextFormatType,
 } from "lexical";
-import { $patchStyleText } from "@lexical/selection";
 import {
   Bold,
-  Italic,
-  Underline,
   Code,
   Highlighter,
+  Italic,
+  type LucideIcon,
+  Palette,
   Strikethrough,
   Subscript,
   Superscript,
-  Palette,
-  type LucideIcon,
+  Underline,
 } from "lucide-react";
 import { useCallback, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { createPortal } from "react-dom";
 import {
   Menu,
-  MenuPopup,
   MenuItem,
-  MenuTrigger,
+  MenuPopup,
   MenuSeparator,
-} from "@/components/ui/menu";
-import { useFloatingToolbar } from "../../lib/hooks/use-floating-toolbar";
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
 import Separator from "../../components/toolbar-separator";
+import { useFloatingToolbar } from "../../lib/hooks/use-floating-toolbar";
 import {
   ToolbarButton,
   ToolbarToggleButton,
@@ -71,14 +70,6 @@ const FORMAT_ITEMS: FormatItem[] = [
   { name: "Subscript", icon: Subscript, format: "subscript", group: "script" },
 ];
 
-interface ToolbarToggleButtonProps {
-  onClick: () => void;
-  isActive: boolean;
-  icon: LucideIcon;
-  title: string;
-  disabled?: boolean;
-}
-
 export function FloatingToolbar() {
   const [editor] = useLexicalComposerContext();
   const { toolbarRef, isVisible, position, activeFormats, selectedText } =
@@ -89,7 +80,7 @@ export function FloatingToolbar() {
       editor.dispatchCommand(FORMAT_TEXT_COMMAND, format as TextFormatType);
       editor.focus();
     },
-    [editor]
+    [editor],
   );
 
   const formatHighlight = useCallback(
@@ -104,15 +95,18 @@ export function FloatingToolbar() {
       });
       editor.focus();
     },
-    [editor]
+    [editor],
   );
 
   const groupedItems = useMemo(() => {
-    const groups = FORMAT_ITEMS.reduce((acc, item) => {
-      if (!acc[item.group]) acc[item.group] = [];
-      acc[item.group].push(item);
-      return acc;
-    }, {} as Record<string, FormatItem[]>);
+    const groups = FORMAT_ITEMS.reduce(
+      (acc, item) => {
+        if (!acc[item.group]) acc[item.group] = [];
+        acc[item.group].push(item);
+        return acc;
+      },
+      {} as Record<string, FormatItem[]>,
+    );
 
     return groups;
   }, []);
@@ -121,22 +115,21 @@ export function FloatingToolbar() {
 
   return createPortal(
     <div
-      ref={toolbarRef}
       className="absolute z-50 flex items-center gap-1 p-2 bg-popover/95 backdrop-blur-md border border-border/50 rounded-lg shadow-lg transition-all duration-200 ease-out"
+      ref={toolbarRef}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
         opacity: position.opacity,
         transform: position.opacity === 1 ? "scale(1)" : "scale(0.95)",
       }}
-      onMouseDown={(e) => e.preventDefault()}
     >
       {groupedItems.basic?.map((item) => (
         <ToolbarToggleButton
+          icon={item.icon}
+          isActive={activeFormats.has(item.format)}
           key={item.name}
           onClick={() => formatText(item.format)}
-          isActive={activeFormats.has(item.format)}
-          icon={item.icon}
           title={item.name}
         />
       ))}
@@ -145,10 +138,10 @@ export function FloatingToolbar() {
 
       {groupedItems.special?.map((item) => (
         <ToolbarToggleButton
+          icon={item.icon}
+          isActive={activeFormats.has(item.format)}
           key={item.name}
           onClick={() => formatText(item.format)}
-          isActive={activeFormats.has(item.format)}
-          icon={item.icon}
           title={item.name}
         />
       ))}
@@ -157,10 +150,10 @@ export function FloatingToolbar() {
 
       {groupedItems.script?.map((item) => (
         <ToolbarToggleButton
+          icon={item.icon}
+          isActive={activeFormats.has(item.format)}
           key={item.name}
           onClick={() => formatText(item.format)}
-          isActive={activeFormats.has(item.format)}
-          icon={item.icon}
           title={item.name}
         />
       ))}
@@ -169,19 +162,20 @@ export function FloatingToolbar() {
 
       <Menu>
         <MenuTrigger
-          render={<ToolbarButton title="Highlight" icon={Highlighter} />}
+          render={<ToolbarButton icon={Highlighter} title="Highlight" />}
         />
         <MenuPopup
-          className="w-48 animate-in slide-in-from-top-2 duration-200"
           align="center"
+          className="w-48 animate-in slide-in-from-top-2 duration-200"
         >
           <div className="grid grid-cols-3 gap-1 p-2">
             {HIGHLIGHT_COLORS.map((color) => (
               <button
+                className="flex flex-col items-center gap-1 p-2 rounded hover:bg-muted/50 transition-colors"
                 key={color.value}
                 onClick={() => formatHighlight(color.value)}
-                className="flex flex-col items-center gap-1 p-2 rounded hover:bg-muted/50 transition-colors"
                 title={color.name}
+                type="button"
               >
                 <div
                   className="w-6 h-4 rounded border border-border/50 shadow-sm"
@@ -195,8 +189,8 @@ export function FloatingToolbar() {
           </div>
           <MenuSeparator />
           <MenuItem
-            onClick={() => formatHighlight("")}
             className="flex items-center gap-2"
+            onClick={() => formatHighlight("")}
           >
             <Palette className="size-4" />
             Remove Highlight
@@ -213,6 +207,6 @@ export function FloatingToolbar() {
         </>
       )}
     </div>,
-    document.body
+    document.body,
   );
 }

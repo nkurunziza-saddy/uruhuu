@@ -1,7 +1,4 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useEffect, useState, useRef } from "react";
-import { createPortal } from "react-dom";
-import { $getNearestNodeFromDOMNode, $getNodeByKey } from "lexical";
 import {
   $deleteTableColumnAtSelection,
   $deleteTableRowAtSelection,
@@ -10,18 +7,20 @@ import {
   $isTableCellNode,
   $isTableNode,
   $isTableRowNode,
-  TableNode,
+  type TableNode,
 } from "@lexical/table";
-
+import { $getNearestNodeFromDOMNode, $getNodeByKey } from "lexical";
 import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Button } from "@/registry/new-york/ui/button";
 import {
   Menu,
-  MenuPopup,
   MenuItem,
-  MenuTrigger,
+  MenuPopup,
   MenuSeparator,
-} from "@/components/ui/menu";
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
 
 export default function TableHoverActionsPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -151,7 +150,7 @@ export default function TableHoverActionsPlugin() {
       <Menu>
         <MenuTrigger
           render={
-            <Button variant="ghost" size="icon" className="rounded-full" />
+            <Button className="rounded-full" size="icon" variant="ghost" />
           }
         >
           <MoreHorizontal className="size-4" />
@@ -189,6 +188,6 @@ export default function TableHoverActionsPlugin() {
         </MenuPopup>
       </Menu>
     </div>,
-    document.body
+    document.body,
   );
 }

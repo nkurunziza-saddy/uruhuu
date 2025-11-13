@@ -1,15 +1,15 @@
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/registry/new-york/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/registry/new-york/ui/dialog";
+import { Input } from "@/registry/new-york/ui/input";
+import { Label } from "@/registry/new-york/ui/label";
 
 export function LinkDialog({
   isOpen,
@@ -41,7 +41,7 @@ export function LinkDialog({
   return (
     <>
       {isOpen && (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog onOpenChange={onClose} open={isOpen}>
           <DialogContent
             aria-describedby="link-dialog"
             className="sm:max-w-md backdrop-blur-md bg-background/95"
@@ -52,27 +52,27 @@ export function LinkDialog({
                   Insert Link
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
                 <div>
-                  <Label htmlFor="url" className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor="url">
                     URL
                   </Label>
                   <Input
-                    id="url"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="https://example.com"
                     autoFocus
                     className="mt-1.5 focus:ring-2 focus:ring-primary/20 transition-all"
+                    id="url"
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="https://example.com"
+                    value={url}
                   />
                 </div>
                 <div className="flex gap-2 justify-end">
-                  <Button type="button" variant="outline" onClick={onClose}>
+                  <Button onClick={onClose} type="button" variant="outline">
                     Cancel
                   </Button>
                   <Button
-                    type="submit"
                     className="bg-primary hover:bg-primary/90"
+                    type="submit"
                   >
                     Insert Link
                   </Button>

@@ -1,6 +1,5 @@
+import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import type { LexicalEditor } from "lexical";
-import { $convertFromMarkdownString } from "@lexical/markdown";
-import { TRANSFORMERS } from "@lexical/markdown";
 
 export function importMarkdown(editor: LexicalEditor, file: File) {
   const reader = new FileReader();

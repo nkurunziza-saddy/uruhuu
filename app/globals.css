@@ -68,7 +68,7 @@
   --color-editor-muted: var(--editor-muted);
   --color-editor-muted-foreground: var(--editor-muted-foreground);
   --color-editor-card: var(--editor-card);
-  --color-editor-card-foreground: var(--editor-card-foreground)
+  --color-editor-card-foreground: var(--editor-card-foreground);
 }
 
 :root {
@@ -195,7 +195,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
   }

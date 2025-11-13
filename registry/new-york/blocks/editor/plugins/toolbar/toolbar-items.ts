@@ -1,24 +1,24 @@
 import {
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  Code,
-  Subscript,
-  Superscript,
-  CaseUpper,
-  List,
-  ListOrdered,
-  ListChecks,
-  Quote,
-  CodeSquare,
-} from "lucide-react";
-import {
-  INSERT_UNORDERED_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
   INSERT_CHECK_LIST_COMMAND,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
 import { FORMAT_TEXT_COMMAND } from "lexical";
+import {
+  Bold,
+  CaseUpper,
+  Code,
+  CodeSquare,
+  Italic,
+  List,
+  ListChecks,
+  ListOrdered,
+  Quote,
+  Strikethrough,
+  Subscript,
+  Superscript,
+  Underline,
+} from "lucide-react";
 
 export const TEXT_FORMAT_ITEMS = [
   { name: "bold", icon: Bold, command: FORMAT_TEXT_COMMAND, payload: "bold" },

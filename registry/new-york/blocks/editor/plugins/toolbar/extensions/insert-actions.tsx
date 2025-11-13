@@ -1,8 +1,13 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
-import { Minus, Plus, Table, ImageIcon } from "lucide-react";
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
-import { ToolbarButton } from "@/components/blocks/editor/plugins/toolbar/extensions/toolbar-button";
+import { ImageIcon, Minus, Plus, Table } from "lucide-react";
+import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
+import { ToolbarButton } from "./toolbar-button";
 
 export function InsertDropDown({
   setShowTableDialog,
@@ -15,30 +20,30 @@ export function InsertDropDown({
 
   return (
     <Menu>
-      <MenuTrigger render={<ToolbarButton title="Insert" icon={Plus} />} />
+      <MenuTrigger render={<ToolbarButton icon={Plus} title="Insert" />} />
       <MenuPopup
         align="start"
         className="animate-in slide-in-from-top-2 duration-200"
       >
         <MenuItem
+          className="hover:bg-accent/80 transition-colors"
           onClick={() =>
             editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)
           }
-          className="hover:bg-accent/80 transition-colors"
         >
           <Minus className="mr-2 size-4" />
           Divider
         </MenuItem>
         <MenuItem
-          onClick={() => setShowTableDialog(true)}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => setShowTableDialog(true)}
         >
           <Table className="mr-2 size-4" />
           Table
         </MenuItem>
         <MenuItem
-          onClick={() => setShowImageDialog(true)}
           className="hover:bg-accent/80 transition-colors"
+          onClick={() => setShowImageDialog(true)}
         >
           <ImageIcon className="mr-2 size-4" />
           Image

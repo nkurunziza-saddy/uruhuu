@@ -1,8 +1,8 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-import { UNDO_COMMAND, REDO_COMMAND } from "lexical";
-import { Undo, Redo } from "lucide-react";
-import { ToolbarButton } from "@/components/blocks/editor/plugins/toolbar/extensions/toolbar-button";
+import { REDO_COMMAND, UNDO_COMMAND } from "lexical";
+import { Redo, Undo } from "lucide-react";
+import { ToolbarButton } from "./toolbar-button";
 
 export function HistoryButtons({
   canUndo,
@@ -18,17 +18,17 @@ export function HistoryButtons({
       <div>
         <ToolbarButton
           disabled={!canUndo}
+          icon={Undo}
           onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
           title="Undo"
-          icon={Undo}
         />
       </div>
       <div>
         <ToolbarButton
           disabled={!canRedo}
+          icon={Redo}
           onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
           title="Redo"
-          icon={Redo}
         />
       </div>
     </>

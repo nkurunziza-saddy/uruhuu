@@ -1,13 +1,13 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   LexicalTypeaheadMenuPlugin,
-  useBasicTypeaheadTriggerMatch,
   MenuOption,
+  useBasicTypeaheadTriggerMatch,
 } from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import { TextNode } from "lexical";
+import type { TextNode } from "lexical";
 import { useCallback, useMemo, useState } from "react";
-import { SLASH_COMMANDS, type SlashCommand } from "./slash-command-items";
 import { createPortal } from "react-dom";
+import { SLASH_COMMANDS, type SlashCommand } from "./slash-command-items";
 import { SlashCommandMenuItem } from "./slash-command-menu-item";
 
 class SlashCommandOption extends MenuOption {
@@ -31,8 +31,8 @@ export default function SlashCommandPlugin() {
           (cmd) =>
             cmd.title.toLowerCase().includes(query.toLowerCase()) ||
             cmd.keywords.some((keyword) =>
-              keyword.toLowerCase().includes(query.toLowerCase())
-            )
+              keyword.toLowerCase().includes(query.toLowerCase()),
+            ),
         )
       : SLASH_COMMANDS;
 
@@ -43,7 +43,7 @@ export default function SlashCommandPlugin() {
     (
       option: SlashCommandOption,
       nodeToRemove: TextNode | null,
-      closeMenu: () => void
+      closeMenu: () => void,
     ) => {
       editor.update(() => {
         nodeToRemove?.remove();
@@ -51,18 +51,14 @@ export default function SlashCommandPlugin() {
         closeMenu();
       });
     },
-    [editor]
+    [editor],
   );
 
   return (
     <LexicalTypeaheadMenuPlugin
-      onQueryChange={setQuery}
-      onSelectOption={onSelectOption}
-      triggerFn={triggerFn}
-      options={options}
       menuRenderFn={(
         anchorElementRef,
-        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
+        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
       ) => {
         const anchorElement = anchorElementRef.current;
 
@@ -79,11 +75,12 @@ export default function SlashCommandPlugin() {
               top: rect.bottom + window.scrollY + 1,
               left: rect.left + window.scrollX,
             }}
-            onMouseDown={(e) => e.preventDefault()}
           >
             {options.map((option, i) => (
               <SlashCommandMenuItem
+                command={option.command}
                 isSelected={selectedIndex === i}
+                key={option.key}
                 onClick={() => {
                   setHighlightedIndex(i);
                   selectOptionAndCleanUp(option);
@@ -91,14 +88,16 @@ export default function SlashCommandPlugin() {
                 onMouseEnter={() => {
                   setHighlightedIndex(i);
                 }}
-                key={option.key}
-                command={option.command}
               />
             ))}
           </div>,
-          document.body
+          document.body,
         );
       }}
+      onQueryChange={setQuery}
+      onSelectOption={onSelectOption}
+      options={options}
+      triggerFn={triggerFn}
     />
   );
 }

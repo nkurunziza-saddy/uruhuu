@@ -7,15 +7,19 @@ import {
   $isRangeSelection,
 } from "lexical";
 import {
+  Check,
   Heading,
   Heading1,
   Heading2,
   Heading3,
   Heading4,
-  Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
+import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
 import { ToolbarButton } from "./toolbar-button";
 
 export function BlockFormatDropDown({ blockType }: { blockType: string }) {
@@ -46,6 +50,7 @@ export function BlockFormatDropDown({ blockType }: { blockType: string }) {
   return (
     <Menu>
       <MenuTrigger
+        className="lowercase"
         render={
           <ToolbarButton
             variant={
@@ -53,7 +58,6 @@ export function BlockFormatDropDown({ blockType }: { blockType: string }) {
             }
           />
         }
-        className="lowercase"
       >
         {blockType === "paragraph" ? (
           <Heading className="size-4" />
@@ -108,8 +112,8 @@ export function BlockFormatDropDown({ blockType }: { blockType: string }) {
           },
         ].map(({ key, icon: Icon, state, onClick }) => (
           <MenuItem
-            key={key}
             className={"flex items-center justify-between gap-5"}
+            key={key}
             onClick={onClick}
           >
             <div className="flex items-center">

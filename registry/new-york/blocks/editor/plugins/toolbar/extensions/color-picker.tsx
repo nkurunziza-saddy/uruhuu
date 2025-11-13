@@ -1,20 +1,25 @@
-import { useState, useCallback, useEffect } from "react";
-import {
-  $getSelection,
-  $isRangeSelection,
-  SELECTION_CHANGE_COMMAND,
-  COMMAND_PRIORITY_CRITICAL,
-  type LexicalEditor,
-} from "lexical";
 import {
   $getSelectionStyleValueForProperty,
   $patchStyleText,
 } from "@lexical/selection";
+import {
+  $getSelection,
+  $isRangeSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  type LexicalEditor,
+  SELECTION_CHANGE_COMMAND,
+} from "lexical";
 import { Palette } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
+import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
 import { FONT_COLORS } from "../../../lib/colors";
-import { ToolbarButton } from "@/components/blocks/editor/plugins/toolbar/extensions/toolbar-button";
+import { ToolbarButton } from "./toolbar-button";
 
 export function ColorPicker({
   editor,
@@ -34,7 +39,7 @@ export function ColorPicker({
         }
       });
     },
-    [editor]
+    [editor],
   );
 
   useEffect(() => {
@@ -48,14 +53,14 @@ export function ColorPicker({
               $getSelectionStyleValueForProperty(
                 selection,
                 "color",
-                "hsl(var(--foreground))"
-              )
+                "hsl(var(--foreground))",
+              ),
             );
           }
         });
         return false;
       },
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
   }, [editor]);
 
@@ -67,8 +72,8 @@ export function ColorPicker({
       <MenuPopup className="animate-in grid grid-cols-3 gap-1 slide-in-from-top-2 duration-200">
         {FONT_COLORS.map((c) => (
           <MenuItem
-            key={c.name}
             className=""
+            key={c.name}
             onClick={() => applyColor(c.value)}
           >
             <div

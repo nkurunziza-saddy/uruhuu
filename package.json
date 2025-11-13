@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "registry:build": "shadcn build",
+    "build": "pnpm run registry:build && next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write",
-    "registry:build": "shadcn build"
+    "format": "biome format --write"
   },
   "dependencies": {
     "@base-ui-components/react": "1.0.0-beta.4",

@@ -1,11 +1,11 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import {
-  $insertTableRowAtSelection,
   $insertTableColumnAtSelection,
+  $insertTableRowAtSelection,
 } from "@lexical/table";
-import { Rows, Columns } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Columns, Rows } from "lucide-react";
+import { Button } from "@/registry/new-york/ui/button";
 
 export function TableButtons() {
   const [editor] = useLexicalComposerContext();
@@ -26,20 +26,20 @@ export function TableButtons() {
     <>
       <div>
         <Button
-          variant="ghost"
-          size="icon-sm"
           onClick={insertRow}
+          size="icon-sm"
           title="Insert Row Below"
+          variant="ghost"
         >
           <Rows className="size-4" />
         </Button>
       </div>
       <div>
         <Button
-          variant="ghost"
-          size="icon-sm"
           onClick={insertColumn}
+          size="icon-sm"
           title="Insert Column Right"
+          variant="ghost"
         >
           <Columns className="size-4" />
         </Button>

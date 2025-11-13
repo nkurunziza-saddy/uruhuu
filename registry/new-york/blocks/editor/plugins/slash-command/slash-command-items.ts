@@ -1,23 +1,11 @@
-import {
-  Heading1,
-  Heading2,
-  Heading3,
-  List,
-  ListOrdered,
-  ListChecks,
-  Quote,
-  CodeSquare,
-  Minus,
-  Type,
-} from "lucide-react";
-import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import { $createCodeNode } from "@lexical/code";
 import {
-  INSERT_UNORDERED_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
   INSERT_CHECK_LIST_COMMAND,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 import {
   $createParagraphNode,
@@ -25,6 +13,18 @@ import {
   $isRangeSelection,
   type LexicalEditor,
 } from "lexical";
+import {
+  CodeSquare,
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListChecks,
+  ListOrdered,
+  Minus,
+  Quote,
+  Type,
+} from "lucide-react";
 
 export interface SlashCommand {
   title: string;

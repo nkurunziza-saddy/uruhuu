@@ -1,16 +1,19 @@
-import { useRef } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-
 import { FileDown, FileUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
+import { useRef } from "react";
 import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
+import {
+  copyAsPlainText,
   exportAsHTML,
   exportAsMarkdown,
-  copyAsPlainText,
   importMarkdown,
 } from "../../../lib/utils";
-import { ToolbarButton } from "@/components/blocks/editor/plugins/toolbar/extensions/toolbar-button";
+import { ToolbarButton } from "./toolbar-button";
 
 export function FileActions() {
   const [editor] = useLexicalComposerContext();
@@ -29,10 +32,10 @@ export function FileActions() {
         <MenuTrigger
           render={
             <ToolbarButton
-              variant="ghost"
-              title="Export"
               className="hover:bg-accent/80 transition-colors"
               icon={FileDown}
+              title="Export"
+              variant="ghost"
             />
           }
         />
@@ -41,20 +44,20 @@ export function FileActions() {
           className="animate-in slide-in-from-top-2 duration-200"
         >
           <MenuItem
-            onClick={() => exportAsHTML(editor)}
             className="hover:bg-accent/80 transition-colors"
+            onClick={() => exportAsHTML(editor)}
           >
             Save as HTML
           </MenuItem>
           <MenuItem
-            onClick={() => exportAsMarkdown(editor)}
             className="hover:bg-accent/80 transition-colors"
+            onClick={() => exportAsMarkdown(editor)}
           >
             Save as Markdown
           </MenuItem>
           <MenuItem
-            onClick={() => copyAsPlainText(editor)}
             className="hover:bg-accent/80 transition-colors"
+            onClick={() => copyAsPlainText(editor)}
           >
             Copy as Plain Text
           </MenuItem>
@@ -62,16 +65,16 @@ export function FileActions() {
       </Menu>
 
       <input
-        type="file"
         accept=".md,.markdown"
-        ref={importInputRef}
-        onChange={handleImport}
         className="hidden"
+        onChange={handleImport}
+        ref={importInputRef}
+        type="file"
       />
       <ToolbarButton
-        title="Import"
-        onClick={() => importInputRef.current?.click()}
         icon={FileUp}
+        onClick={() => importInputRef.current?.click()}
+        title="Import"
       />
     </>
   );

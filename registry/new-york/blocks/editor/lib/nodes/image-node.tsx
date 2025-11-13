@@ -1,6 +1,6 @@
-import type { JSX } from "react";
 import { DecoratorNode } from "lexical";
 import Image from "next/image";
+import type { JSX } from "react";
 
 import type { ImageNodeSerialized } from "../types/editor";
 
@@ -49,10 +49,10 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   decorate(): JSX.Element {
     return (
       <Image
-        src={this.__src || "/placeholder.svg"}
         alt={this.__alt}
-        width={500}
         height={500}
+        src={this.__src || "/placeholder.svg"}
+        width={500}
         // onError={() => setIsLoadError(true)}
       />
     );

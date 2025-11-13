@@ -1,51 +1,48 @@
-import { useState, useCallback, useEffect, useReducer } from "react";
+import { $isCodeNode } from "@lexical/code";
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { $isListNode, ListNode } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-
+import { $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
+import { $patchStyleText } from "@lexical/selection";
+import { $isTableCellNode, INSERT_TABLE_COMMAND } from "@lexical/table";
+import {
+  $findMatchingParent,
+  $getNearestNodeOfType,
+  mergeRegister,
+} from "@lexical/utils";
 import {
   $getSelection,
   $isRangeSelection,
-  SELECTION_CHANGE_COMMAND,
-  CAN_UNDO_COMMAND,
   CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   type ElementNode,
+  SELECTION_CHANGE_COMMAND,
   type TextNode,
 } from "lexical";
-import { $patchStyleText } from "@lexical/selection";
-import { BlockFormatDropDown } from "./extensions/block-format-dropdown";
-import { $isListNode, ListNode } from "@lexical/list";
-import { $isCodeNode } from "@lexical/code";
-import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
-import { INSERT_TABLE_COMMAND, $isTableCellNode } from "@lexical/table";
-import {
-  $getNearestNodeOfType,
-  mergeRegister,
-  $findMatchingParent,
-} from "@lexical/utils";
-import { LinkIcon, Highlighter, Github } from "lucide-react";
-import { FileActions } from "./extensions/file-actions";
-import { TableButtons } from "./extensions/table-buttons";
-import { InsertDropDown } from "./extensions/insert-actions";
-import { AlignButtons } from "./extensions/align-buttons";
-import { TextFormatButtons } from "./extensions/text-format-buttons";
-import { Button } from "@/components/ui/button";
+import { Highlighter, LinkIcon } from "lucide-react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import {
   Menu,
-  MenuPopup,
   MenuItem,
-  MenuTrigger,
+  MenuPopup,
   MenuSeparator,
-} from "@/components/ui/menu";
-import { LinkDialog, TableDialog, ImageDialog } from "../../components";
-import { $createImageNode } from "../../lib/nodes/image-node";
-import { HIGHLIGHT_COLORS } from "../../lib/colors";
-import { ColorPicker } from "./extensions/color-picker";
-import { HistoryButtons } from "./extensions/history-buttons";
-import { ListButtons } from "./extensions/list-buttons";
-import { BlockTypeButtons } from "./extensions/block-type-buttons";
-import { $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
+  MenuTrigger,
+} from "@/registry/new-york/ui/menu";
+import { ImageDialog, LinkDialog, TableDialog } from "../../components";
 import Separator from "../../components/toolbar-separator";
-import { ModeToggle } from "../../components/theme-toggler";
+import { HIGHLIGHT_COLORS } from "../../lib/colors";
+import { $createImageNode } from "../../lib/nodes/image-node";
+import { AlignButtons } from "./extensions/align-buttons";
+import { BlockFormatDropDown } from "./extensions/block-format-dropdown";
+import { BlockTypeButtons } from "./extensions/block-type-buttons";
+import { ColorPicker } from "./extensions/color-picker";
+import { FileActions } from "./extensions/file-actions";
+import { HistoryButtons } from "./extensions/history-buttons";
+import { InsertDropDown } from "./extensions/insert-actions";
+import { ListButtons } from "./extensions/list-buttons";
+import { TableButtons } from "./extensions/table-buttons";
+import { TextFormatButtons } from "./extensions/text-format-buttons";
 import { ToolbarButton } from "./extensions/toolbar-button";
 
 const initialState = {
@@ -144,7 +141,7 @@ export function Toolbar() {
         newToolbarState.blockType = blockType;
 
         const cell = $findMatchingParent(anchorNode, (node) =>
-          $isTableCellNode(node)
+          $isTableCellNode(node),
         );
         newToolbarState.isTable = cell !== null;
 
@@ -191,8 +188,8 @@ export function Toolbar() {
           updateToolbar();
           return false;
         },
-        COMMAND_PRIORITY_CRITICAL
-      )
+        COMMAND_PRIORITY_CRITICAL,
+      ),
     );
   }, [editor, updateToolbar]);
 
@@ -203,7 +200,7 @@ export function Toolbar() {
         dispatch({ type: "SET_CAN_UNDO", payload });
         return false;
       },
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
   }, [editor]);
 
@@ -214,7 +211,7 @@ export function Toolbar() {
         dispatch({ type: "SET_CAN_REDO", payload });
         return false;
       },
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
   }, [editor]);
 
@@ -252,8 +249,8 @@ export function Toolbar() {
   return (
     <div className="flex relative items-center gap-1 p-3 border-b bg-linear-to-r from-background via-background to-accent/5 backdrop-blur-sm flex-wrap">
       <HistoryButtons
-        canUndo={toolbarState.canUndo}
         canRedo={toolbarState.canRedo}
+        canUndo={toolbarState.canUndo}
       />
 
       <Separator />
@@ -273,15 +270,16 @@ export function Toolbar() {
         <MenuTrigger
           render={
             <ToolbarButton
+              icon={Highlighter}
               isActive={toolbarState.isHighlight}
               title="Highlight"
-              icon={Highlighter}
             />
           }
         />
         <MenuPopup className="animate-in slide-in-from-top-2 duration-200">
           {HIGHLIGHT_COLORS.map((color) => (
             <MenuItem
+              className="hover:bg-accent/80 transition-colors"
               key={color.value}
               onClick={() => {
                 editor.update(() => {
@@ -293,7 +291,6 @@ export function Toolbar() {
                   }
                 });
               }}
-              className="hover:bg-accent/80 transition-colors"
             >
               <div
                 className="size-4 rounded-sm mr-2 border shadow-sm"
@@ -304,6 +301,7 @@ export function Toolbar() {
           ))}
           <MenuSeparator />
           <MenuItem
+            className="hover:bg-accent/80 transition-colors"
             onClick={() => {
               editor.update(() => {
                 const selection = $getSelection();
@@ -312,7 +310,6 @@ export function Toolbar() {
                 }
               });
             }}
-            className="hover:bg-accent/80 transition-colors"
           >
             Remove Highlight
           </MenuItem>
@@ -321,18 +318,18 @@ export function Toolbar() {
       <Separator />
       <div>
         <ToolbarButton
+          icon={LinkIcon}
           isActive={toolbarState.isLink}
           onClick={insertLink}
           title="Insert Link"
-          icon={LinkIcon}
         />
       </div>
 
       <Separator />
 
       <InsertDropDown
-        setShowTableDialog={setShowTableDialog}
         setShowImageDialog={setShowImageDialog}
+        setShowTableDialog={setShowTableDialog}
       />
 
       {toolbarState.isTable && (

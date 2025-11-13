@@ -1,7 +1,7 @@
 "use client";
 
-import { BorderSeparator } from "@/components/ui/border-separator";
-import { COMPONENTS } from "@/lib/components";
+import { COMPONENTS } from "@/lib/constants/components";
+import { BorderSeparator } from "@/registry/new-york/ui/border-separator";
 import { ComponentCard } from "./component-card";
 
 export default function Home() {
@@ -20,10 +20,10 @@ export default function Home() {
       <div className="cpx grid grid-cols-1 gap-6 items-start py-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         {COMPONENTS.map((component) => (
           <ComponentCard
-            key={component.id}
-            name={component.name}
             commands={component.commands}
             example={component.example}
+            key={component.id}
+            name={component.name}
           />
         ))}
       </div>

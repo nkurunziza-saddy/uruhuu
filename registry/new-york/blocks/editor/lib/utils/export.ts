@@ -1,14 +1,13 @@
-import type { LexicalEditor } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
-import { $convertToMarkdownString } from "@lexical/markdown";
-import { TRANSFORMERS } from "@lexical/markdown";
+import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import type { LexicalEditor } from "lexical";
 import { $getRoot } from "lexical";
 
 function download(filename: string, text: string) {
   const element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
   );
   element.setAttribute("download", filename);
 

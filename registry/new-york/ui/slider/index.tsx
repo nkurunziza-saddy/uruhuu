@@ -1,0 +1,76 @@
+"use client";
+
+import { Slider as SliderPrimitive } from "@base-ui-components/react/slider";
+import * as React from "react";
+
+import { cn } from "@/registry/new-york/libs/utils";
+
+function Slider({
+  className,
+  children,
+  defaultValue,
+  value,
+  min = 0,
+  max = 100,
+  ...props
+}: SliderPrimitive.Root.Props) {
+  const _values = React.useMemo(() => {
+    if (value !== undefined) {
+      return Array.isArray(value) ? value : [value];
+    }
+    if (defaultValue !== undefined) {
+      return Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+    }
+    return [min];
+  }, [value, defaultValue, min]);
+
+  return (
+    <SliderPrimitive.Root
+      className="data-[orientation=horizontal]:w-full"
+      defaultValue={defaultValue}
+      max={max}
+      min={min}
+      thumbAlignment="edge"
+      value={value}
+      {...props}
+    >
+      {children}
+      <SliderPrimitive.Control
+        className={cn(
+          "flex touch-none select-none data-disabled:opacity-64 data-disabled:pointer-events-none data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:flex-col",
+          className,
+        )}
+        data-slot="slider-control"
+      >
+        <SliderPrimitive.Track
+          className="relative grow select-none bg-input data-[orientation=horizontal]:h-1 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1"
+          data-slot="slider-track"
+        >
+          <SliderPrimitive.Indicator
+            className="rounded-full bg-primary select-none data-[orientation=horizontal]:ms-0.5 data-[orientation=vertical]:mb-0.5"
+            data-slot="slider-indicator"
+          />
+          {Array.from({ length: _values.length }, (_, index) => (
+            <SliderPrimitive.Thumb
+              className="block size-4 shrink-0 rounded-full border border-input bg-white outline-none select-none focus-visible:ring-2 focus-visible:ring-ring/50 data-dragging:ring-2 data-dragging:ring-ring/50"
+              data-slot="slider-thumb"
+              key={index}
+            />
+          ))}
+        </SliderPrimitive.Track>
+      </SliderPrimitive.Control>
+    </SliderPrimitive.Root>
+  );
+}
+
+function SliderValue({ className, ...props }: SliderPrimitive.Value.Props) {
+  return (
+    <SliderPrimitive.Value
+      className={cn("flex justify-end text-sm", className)}
+      data-slot="slider-value"
+      {...props}
+    />
+  );
+}
+
+export { Slider, SliderValue };

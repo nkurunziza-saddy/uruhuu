@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Toggle } from "@/components/ui/toggle";
-import type { LucideIcon } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
+import type { LucideIcon } from "lucide-react";
+import * as React from "react";
 import { cn } from "@/registry/new-york/libs/utils";
+import { Button, type buttonVariants } from "@/registry/new-york/ui/button";
+import { Toggle } from "@/registry/new-york/ui/toggle";
 
 interface ToggleProps {
   onClick: () => void;
@@ -20,11 +20,11 @@ export function ToolbarToggleButton({
 }: ToggleProps) {
   return (
     <Toggle
-      size="sm"
-      pressed={isActive}
-      onPressedChange={onClick}
-      title={title}
       onMouseDown={(e) => e.preventDefault()}
+      onPressedChange={onClick}
+      pressed={isActive}
+      size="sm"
+      title={title}
     >
       <Icon className="size-4" />
     </Toggle>
@@ -57,10 +57,10 @@ export const ToolbarButton = React.forwardRef<
   ) => {
     return (
       <Button
-        ref={ref}
-        variant={variant ?? (isActive ? "secondary" : "ghost")}
-        size={size}
         className={cn("h-7 w-7 px-[calc(--spacing(1.5)-1px)]", className)}
+        ref={ref}
+        size={size}
+        variant={variant ?? (isActive ? "secondary" : "ghost")}
         {...props}
       >
         {children}

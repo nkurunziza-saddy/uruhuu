@@ -279,12 +279,6 @@ your-project/
 }
 ```
 
-## Registry Build Process
-### Use shadcn CLI to build the registry JSON files:
-```bash
-pnpm registry:build
-```
-
 ## File Organization Best Practices
 
 ### For UI Primitives (Small components)
