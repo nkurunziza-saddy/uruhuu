@@ -1,8 +1,9 @@
+import Link from "next/link";
+import { Editor } from "@/registry/new-york/blocks/editor";
 import {
   BorderSeparator,
   FixedBorderSeparator,
 } from "@/registry/new-york/ui/border-separator";
-import { Editor } from "@/registry/new-york/blocks/editor";
 import { CopyButton } from "./copy-button";
 
 export default function Home() {
@@ -25,7 +26,7 @@ export default function Home() {
         {
           title: "With toolbar",
           description: "A code editor component with toolbar",
-          component: <Editor showToolbar showFloatingToolbar />,
+          component: <Editor showFloatingToolbar showToolbar />,
         },
       ],
     },
@@ -40,6 +41,14 @@ export default function Home() {
         </p>
       </div>
       <BorderSeparator />
+      <div className="cpx space-y-2 py-5">
+        <div className="flex flex-wrap gap-5">
+          <Link href={"/"}>Featured</Link>
+          <Link href={"/editor"}>Text editor</Link>
+          <Link href={"/forms"}>Forms</Link>
+        </div>
+      </div>
+      <BorderSeparator />
 
       <div className=" grid grid-cols-1 gap-6 py-5">
         {components.map((component) => (
@@ -52,7 +61,7 @@ export default function Home() {
             <div className="cpx flex-1">
               {component.examples.map((example) => {
                 return (
-                  <div key={example.title} className="cpx space-y-2 py-5">
+                  <div className="cpx space-y-2 py-5" key={example.title}>
                     <h3 className="text-lg font-bold">{example.title}</h3>
                     <p className="text-muted-foreground">
                       {example.description}
