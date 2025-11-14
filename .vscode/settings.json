@@ -1,9 +1,5 @@
 {
-  "cSpell.words": [
-    "fieldset",
-    "shadcn",
-    "Uruhuu"
-  ],
+  "cSpell.words": ["fieldset", "oklch", "shadcn", "Uruhuu"],
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit",
     "source.action.useSortedAttributes.biome": "explicit",
