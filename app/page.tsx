@@ -1,8 +1,13 @@
-"use client";
-
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/configs";
 import { COMPONENTS } from "@/lib/constants/components";
 import { BorderSeparator } from "@/registry/new-york/ui/border-separator";
+import type { Metadata } from "next";
 import { ComponentCard } from "./component-card";
+
+export const metadata: Metadata = {
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
+};
 
 export default function Home() {
   return (
