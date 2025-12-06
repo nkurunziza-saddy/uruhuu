@@ -53,12 +53,6 @@ export const TEXT_FORMAT_ITEMS = [
     command: FORMAT_TEXT_COMMAND,
     payload: "superscript",
   },
-  {
-    name: "capitalize",
-    icon: CaseUpper,
-    command: FORMAT_TEXT_COMMAND,
-    payload: "capitalize",
-  },
 ];
 
 export const BLOCK_FORMAT_ITEMS = [

@@ -30,7 +30,8 @@ export const CopyButton = ({
       <Menu>
         <MenuTrigger
           render={
-            <div
+            <button
+              type="button"
               className=" flex items-center gap-3 text-muted-foreground border border-dashed w-fit px-1.5 py-0.5 cursor-pointer select-none"
               aria-label="Copy install command"
             />
@@ -72,18 +73,10 @@ export const CopyButton = ({
         <MenuPopup align="start" sideOffset={4}>
           <MenuGroup>
             <MenuGroupLabel>Commands</MenuGroupLabel>
-            <MenuItem onClick={() => copyCommand(commands.pnpm)}>
-              Copy PNPM Command
-            </MenuItem>
-            <MenuItem onClick={() => copyCommand(commands.yarn)}>
-              Copy Yarn Command
-            </MenuItem>
-            <MenuItem onClick={() => copyCommand(commands.npm)}>
-              Copy NPM Command
-            </MenuItem>
-            <MenuItem onClick={() => copyCommand(commands.bun)}>
-              Copy Bun Command
-            </MenuItem>
+            <MenuItem onClick={() => copyCommand(commands.pnpm)}>pnpm</MenuItem>
+            <MenuItem onClick={() => copyCommand(commands.yarn)}>yarn</MenuItem>
+            <MenuItem onClick={() => copyCommand(commands.npm)}>npm</MenuItem>
+            <MenuItem onClick={() => copyCommand(commands.bun)}>bun</MenuItem>
           </MenuGroup>
         </MenuPopup>
       </Menu>

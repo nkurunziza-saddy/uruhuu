@@ -20,7 +20,7 @@ import {
   SELECTION_CHANGE_COMMAND,
   type TextNode,
 } from "lexical";
-import { Highlighter, LinkIcon } from "lucide-react";
+import { Highlighter, LinkIcon, Mic, MicOff } from "lucide-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import {
   Menu,
@@ -29,7 +29,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/registry/new-york/ui/menu";
-import { ImageDialog, LinkDialog, TableDialog } from "../../components";
+import { ImageDialog, LinkPopover, TableDialog } from "../../components";
 import Separator from "../../components/toolbar-separator";
 import { HIGHLIGHT_COLORS } from "../../lib/colors";
 import { $createImageNode } from "../../lib/nodes/image-node";
@@ -42,8 +42,10 @@ import { HistoryButtons } from "./extensions/history-buttons";
 import { InsertDropDown } from "./extensions/insert-actions";
 import { ListButtons } from "./extensions/list-buttons";
 import { TableButtons } from "./extensions/table-buttons";
+import { TextCaseMenu } from "./extensions/text-case-menu";
 import { TextFormatButtons } from "./extensions/text-format-buttons";
 import { ToolbarButton } from "./extensions/toolbar-button";
+import { useSpeechToTextState } from "../../plugins/speech-to-text";
 
 const initialState = {
   isBold: false,
@@ -56,6 +58,8 @@ const initialState = {
   isSubscript: false,
   isSuperscript: false,
   isCapitalized: false,
+  isUppercase: false,
+  isLowercase: false,
   isTable: false,
   isBulletedList: false,
   isNumberedList: false,
@@ -92,6 +96,7 @@ export function Toolbar() {
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showTableDialog, setShowTableDialog] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
+  const isSpeechToTextActive = useSpeechToTextState();
 
   const updateToolbar = useCallback(() => {
     editor.read(() => {
@@ -112,6 +117,8 @@ export function Toolbar() {
         isSubscript: false,
         isSuperscript: false,
         isCapitalized: false,
+        isUppercase: false,
+        isLowercase: false,
         isTable: false,
         blockType: "paragraph",
       };
@@ -173,6 +180,8 @@ export function Toolbar() {
         newToolbarState.isSubscript = selection.hasFormat("subscript");
         newToolbarState.isSuperscript = selection.hasFormat("superscript");
         newToolbarState.isCapitalized = selection.hasFormat("capitalize");
+        newToolbarState.isUppercase = selection.hasFormat("uppercase");
+        newToolbarState.isLowercase = selection.hasFormat("lowercase");
       }
 
       dispatch({ type: "UPDATE", payload: newToolbarState });
@@ -189,31 +198,25 @@ export function Toolbar() {
           return false;
         },
         COMMAND_PRIORITY_CRITICAL
+      ),
+      editor.registerCommand(
+        CAN_UNDO_COMMAND,
+        (payload: boolean) => {
+          dispatch({ type: "SET_CAN_UNDO", payload });
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
+      ),
+      editor.registerCommand(
+        CAN_REDO_COMMAND,
+        (payload: boolean) => {
+          dispatch({ type: "SET_CAN_REDO", payload });
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
       )
     );
   }, [editor, updateToolbar]);
-
-  useEffect(() => {
-    return editor.registerCommand(
-      CAN_UNDO_COMMAND,
-      (payload: boolean) => {
-        dispatch({ type: "SET_CAN_UNDO", payload });
-        return false;
-      },
-      COMMAND_PRIORITY_CRITICAL
-    );
-  }, [editor]);
-
-  useEffect(() => {
-    return editor.registerCommand(
-      CAN_REDO_COMMAND,
-      (payload: boolean) => {
-        dispatch({ type: "SET_CAN_REDO", payload });
-        return false;
-      },
-      COMMAND_PRIORITY_CRITICAL
-    );
-  }, [editor]);
 
   const insertLink = () => {
     if (!toolbarState.isLink) {
@@ -230,9 +233,11 @@ export function Toolbar() {
   };
 
   const handleTableSubmit = (rows: number, columns: number) => {
+    const validRows = Math.max(1, Math.min(rows, 20));
+    const validColumns = Math.max(1, Math.min(columns, 20));
     editor.dispatchCommand(INSERT_TABLE_COMMAND, {
-      columns: columns.toString(),
-      rows: rows.toString(),
+      columns: validColumns.toString(),
+      rows: validRows.toString(),
     });
   };
 
@@ -264,6 +269,8 @@ export function Toolbar() {
       <Separator />
 
       <TextFormatButtons toolbarState={toolbarState} />
+      <TextCaseMenu toolbarState={toolbarState} />
+      <Separator />
       <ColorPicker editor={editor} />
 
       <Menu>
@@ -316,14 +323,20 @@ export function Toolbar() {
         </MenuPopup>
       </Menu>
       <Separator />
-      <div>
-        <ToolbarButton
-          icon={LinkIcon}
-          isActive={toolbarState.isLink}
-          onClick={insertLink}
-          title="Insert Link"
-        />
-      </div>
+      <LinkPopover
+        isOpen={showLinkDialog}
+        initialUrl=""
+        onClose={() => setShowLinkDialog(false)}
+        onSubmit={handleLinkSubmit}
+        trigger={
+          <ToolbarButton
+            icon={LinkIcon}
+            isActive={toolbarState.isLink}
+            onClick={insertLink}
+            title="Insert Link"
+          />
+        }
+      />
 
       <Separator />
 
@@ -343,10 +356,18 @@ export function Toolbar() {
 
       <AlignButtons />
 
-      <LinkDialog
-        isOpen={showLinkDialog}
-        onClose={() => setShowLinkDialog(false)}
-        onSubmit={handleLinkSubmit}
+      <Separator />
+
+      <ToolbarButton
+        icon={isSpeechToTextActive ? MicOff : Mic}
+        isActive={isSpeechToTextActive}
+        onClick={() => {
+          const event = new CustomEvent("toggle-speech-to-text");
+          window.dispatchEvent(event);
+        }}
+        title={
+          isSpeechToTextActive ? "Stop Speech to Text" : "Start Speech to Text"
+        }
       />
 
       <TableDialog

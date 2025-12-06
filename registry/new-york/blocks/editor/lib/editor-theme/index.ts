@@ -4,19 +4,19 @@ export const theme: EditorThemeClasses = {
   ltr: "text-left",
   rtl: "text-right",
 
-  paragraph: "m-0 mb-2 leading-relaxed relative",
+  paragraph: "m-0 mb-2 leading-relaxed relative will-change-auto",
 
   heading: {
-    h1: "text-3xl font-bold my-4 text-foreground",
-    h2: "text-2xl font-semibold my-3 text-foreground/95",
-    h3: "text-xl font-medium my-3 text-foreground/90",
-    h4: "text-lg font-medium my-2 text-foreground/85",
-    h5: "text-base font-medium my-2 text-foreground/80",
-    h6: "text-sm font-medium my-2 text-foreground/80",
+    h1: "text-3xl font-bold my-4 text-foreground will-change-auto",
+    h2: "text-2xl font-semibold my-3 text-foreground/95 will-change-auto",
+    h3: "text-xl font-medium my-3 text-foreground/90 will-change-auto",
+    h4: "text-lg font-medium my-2 text-foreground/85 will-change-auto",
+    h5: "text-base font-medium my-2 text-foreground/80 will-change-auto",
+    h6: "text-sm font-medium my-2 text-foreground/80 will-change-auto",
   },
 
   quote:
-    "ml-4 my-3 border-l-4 border-muted-foreground/30 pl-4 text-muted-foreground italic bg-muted/20 py-2 rounded-r",
+    "ml-4 my-3 border-l-4 border-muted-foreground/30 pl-4 text-muted-foreground italic bg-muted/20 py-2 rounded-r will-change-auto",
 
   list: {
     nested: {
@@ -42,8 +42,8 @@ export const theme: EditorThemeClasses = {
   text: {
     bold: "font-bold",
     capitalize: "capitalize",
-    code: "bg-editor-muted/80 mx-1 px-1.5 py-0.5 rounded text-sm font-mono border border-border",
-    highlight: "bg-yellow-200/40 px-1 rounded",
+    code: "bg-muted/90 dark:bg-muted/70 mx-0.5 px-1.5 py-0.5 rounded text-sm font-mono border border-border/50 text-foreground/90",
+    highlight: "bg-yellow-200/40 dark:bg-yellow-900/30 px-1 rounded",
     italic: "italic",
     lowercase: "lowercase",
     strikethrough: "line-through opacity-70",
@@ -54,7 +54,7 @@ export const theme: EditorThemeClasses = {
     uppercase: "uppercase",
   },
 
-  code: "relative block bg-muted/50 rounded-lg overflow-x-auto my-4 text-sm leading-relaxed px-4 py-3 pl-14 font-mono border border-border",
+  code: "relative block bg-muted/50 dark:bg-muted/30 rounded-lg overflow-x-auto my-4 text-sm leading-relaxed px-4 py-3 font-mono border border-border/50",
   codeHighlight: {
     atrule: "text-blue-600 dark:text-blue-400",
     attr: "text-blue-600 dark:text-blue-400",

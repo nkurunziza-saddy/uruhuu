@@ -28,20 +28,12 @@ import {
   MenuTrigger,
 } from "@/registry/new-york/ui/menu";
 import Separator from "../../components/toolbar-separator";
+import { HIGHLIGHT_COLORS } from "../../lib/colors";
 import { useFloatingToolbar } from "../../lib/hooks/use-floating-toolbar";
 import {
   ToolbarButton,
   ToolbarToggleButton,
 } from "../toolbar/extensions/toolbar-button";
-
-const HIGHLIGHT_COLORS = [
-  { name: "Yellow", value: "#fef08a" },
-  { name: "Green", value: "#bbf7d0" },
-  { name: "Blue", value: "#bfdbfe" },
-  { name: "Purple", value: "#e9d5ff" },
-  { name: "Pink", value: "#fce7f3" },
-  { name: "Orange", value: "#fed7aa" },
-];
 
 interface FormatItem {
   name: string;
@@ -115,13 +107,14 @@ export function FloatingToolbar() {
 
   return createPortal(
     <div
-      className="absolute z-50 flex items-center gap-1 p-2 bg-popover/95 backdrop-blur-md border border-border/50 rounded-lg shadow-lg transition-all duration-200 ease-out"
+      className="absolute z-50 flex items-center gap-1 p-2 bg-popover/95 backdrop-blur-md border border-border/50 rounded-lg shadow-lg transition-opacity duration-200 ease-out will-change-[opacity,transform]"
       ref={toolbarRef}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
         opacity: position.opacity,
-        transform: position.opacity === 1 ? "scale(1)" : "scale(0.95)",
+        transform: `translateZ(0) ${position.opacity === 1 ? "scale(1)" : "scale(0.95)"}`,
+        pointerEvents: position.opacity > 0 ? "auto" : "none",
       }}
     >
       {groupedItems.basic?.map((item) => (

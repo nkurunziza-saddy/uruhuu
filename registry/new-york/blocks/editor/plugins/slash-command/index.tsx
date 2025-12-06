@@ -55,7 +55,8 @@ export default function SlashCommandPlugin() {
   );
 
   return (
-    <LexicalTypeaheadMenuPlugin
+    <div>
+      <LexicalTypeaheadMenuPlugin
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
@@ -99,5 +100,6 @@ export default function SlashCommandPlugin() {
       options={options}
       triggerFn={triggerFn}
     />
+    </div>
   );
 }

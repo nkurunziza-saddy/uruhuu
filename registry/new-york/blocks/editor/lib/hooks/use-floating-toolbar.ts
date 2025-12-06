@@ -63,9 +63,20 @@ export function useFloatingToolbar(): UseFloatingToolbarReturn {
     return { top, left, opacity: 1 };
   }, []);
 
+  const FORMATS = [
+    "bold",
+    "italic",
+    "underline",
+    "code",
+    "strikethrough",
+    "superscript",
+    "subscript",
+  ] as const;
+
   const updateToolbar = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
 
     editor.read(() => {
@@ -94,21 +105,26 @@ export function useFloatingToolbar(): UseFloatingToolbarReturn {
         setSelectedText(text);
 
         const formats = new Set<string>();
-        if (selection.hasFormat("bold")) formats.add("bold");
-        if (selection.hasFormat("italic")) formats.add("italic");
-        if (selection.hasFormat("underline")) formats.add("underline");
-        if (selection.hasFormat("code")) formats.add("code");
-        if (selection.hasFormat("strikethrough")) formats.add("strikethrough");
-        if (selection.hasFormat("superscript")) formats.add("superscript");
-        if (selection.hasFormat("subscript")) formats.add("subscript");
+        FORMATS.forEach((format) => {
+          if (selection.hasFormat(format)) {
+            formats.add(format);
+          }
+        });
 
         setActiveFormats(formats);
-
         setIsVisible(true);
 
         requestAnimationFrame(() => {
           const newPosition = calculatePosition(rect);
-          setPosition(newPosition);
+          setPosition((prev) => {
+            if (
+              Math.abs(prev.top - newPosition.top) > 1 ||
+              Math.abs(prev.left - newPosition.left) > 1
+            ) {
+              return newPosition;
+            }
+            return prev;
+          });
         });
       } else {
         timeoutRef.current = setTimeout(() => {
@@ -136,19 +152,31 @@ export function useFloatingToolbar(): UseFloatingToolbarReturn {
 
     const handleScroll = () => {
       if (isVisible) {
-        updateToolbar();
+        requestAnimationFrame(() => {
+          updateToolbar();
+        });
       }
     };
 
     const handleResize = () => {
       if (isVisible) {
-        const nativeSelection = window.getSelection();
-        if (nativeSelection && nativeSelection.rangeCount > 0) {
-          const domRange = nativeSelection.getRangeAt(0);
-          const rect = domRange.getBoundingClientRect();
-          const newPosition = calculatePosition(rect);
-          setPosition(newPosition);
-        }
+        requestAnimationFrame(() => {
+          const nativeSelection = window.getSelection();
+          if (nativeSelection && nativeSelection.rangeCount > 0) {
+            const domRange = nativeSelection.getRangeAt(0);
+            const rect = domRange.getBoundingClientRect();
+            const newPosition = calculatePosition(rect);
+            setPosition((prev) => {
+              if (
+                Math.abs(prev.top - newPosition.top) > 1 ||
+                Math.abs(prev.left - newPosition.left) > 1
+              ) {
+                return newPosition;
+              }
+              return prev;
+            });
+          }
+        });
       }
     };
 
@@ -177,8 +205,8 @@ export function useFloatingToolbar(): UseFloatingToolbarReturn {
           updateToolbar();
           return false;
         },
-        COMMAND_PRIORITY_LOW,
-      ),
+        COMMAND_PRIORITY_LOW
+      )
     );
   }, [editor, updateToolbar]);
 
