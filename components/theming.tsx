@@ -1,4 +1,6 @@
-export function ThemingPage() {
+import { codeToHtml } from "shiki";
+
+export async function ThemingPage() {
   return (
     <div className="space-y-8">
       <div>
@@ -17,9 +19,11 @@ export function ThemingPage() {
           </code>
           .
         </p>
-        <div className="rounded-lg border bg-muted/40 p-4">
-          <pre className="text-sm font-mono overflow-x-auto">
-            {`:root {
+        <div
+          className="rounded-lg border overflow-hidden [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:bg-transparent! [&_code]:font-mono"
+          dangerouslySetInnerHTML={{
+            __html: await codeToHtml(
+              `:root {
   --background: 0 0% 100%;
   --foreground: 0 0% 3.9%;
   --primary: 0 0% 9%;
@@ -30,9 +34,11 @@ export function ThemingPage() {
   --border: 0 0% 89.8%;
   --ring: 0 0% 3.9%;
   --radius: 0.5rem;
-}`}
-          </pre>
-        </div>
+}`,
+              { lang: "css", theme: "vitesse-dark" }
+            ),
+          }}
+        />
       </div>
 
       <div className="space-y-4">
@@ -42,17 +48,21 @@ export function ThemingPage() {
           <code className="bg-muted px-1.5 py-0.5 rounded text-sm">dark</code>{" "}
           class to your HTML element.
         </p>
-        <div className="rounded-lg border bg-muted/40 p-4">
-          <pre className="text-sm font-mono overflow-x-auto">
-            {`.dark {
+        <div
+          className="rounded-lg border overflow-hidden [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:bg-transparent! [&_code]:font-mono"
+          dangerouslySetInnerHTML={{
+            __html: await codeToHtml(
+              `.dark {
   --background: 0 0% 3.9%;
   --foreground: 0 0% 98%;
   --primary: 0 0% 98%;
   --muted: 0 0% 14.9%;
   /* ... */
-}`}
-          </pre>
-        </div>
+}`,
+              { lang: "css", theme: "vitesse-dark" }
+            ),
+          }}
+        />
       </div>
     </div>
   );

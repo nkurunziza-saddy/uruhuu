@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     const source = await readFile(filePath, "utf-8");
     const highlighted = await codeToHtml(source, {
       lang: "tsx",
-      theme: "github-dark-default",
+      theme: "vitesse-dark",
     });
 
     return NextResponse.json({

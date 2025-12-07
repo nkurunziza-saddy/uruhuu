@@ -47,6 +47,7 @@ export default function RootLayout({
 
               <div className="flex items-center gap-2">
                 <Button
+                  nativeButton={false}
                   render={
                     <Link
                       aria-label="github"

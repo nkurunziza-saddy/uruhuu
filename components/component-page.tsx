@@ -11,7 +11,7 @@ export async function ComponentPage({
   const highlightedCode = component.code
     ? await codeToHtml(component.code, {
         lang: "tsx",
-        theme: "github-dark-default",
+        theme: "vitesse-dark",
       })
     : undefined;
 
@@ -63,7 +63,7 @@ export async function ComponentPage({
               )} } from "@/components/ui/${
                 component.id
               }";\n\n<${component.name.replace(/\s+/g, "")} />`,
-              { lang: "tsx", theme: "github-dark-default" }
+              { lang: "tsx", theme: "vitesse-dark" }
             ),
           }}
         />

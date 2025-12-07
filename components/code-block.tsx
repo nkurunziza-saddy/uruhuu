@@ -11,7 +11,7 @@ export async function highlightCode(
 ): Promise<string> {
   const html = await codeToHtml(code, {
     lang: language,
-    theme: "github-dark-default",
+    theme: "vitesse-dark",
   });
   return html;
 }

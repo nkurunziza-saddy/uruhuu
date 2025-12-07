@@ -40,7 +40,7 @@ export function PreviewCard({
           <button
             onClick={() => setActiveTab("preview")}
             className={cn(
-              "flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+              "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
               activeTab === "preview"
                 ? "border-b-2 border-primary text-foreground"
                 : "border-b-2 border-b-transparent text-muted-foreground hover:text-foreground"
@@ -52,7 +52,7 @@ export function PreviewCard({
             <button
               onClick={() => setActiveTab("code")}
               className={cn(
-                "flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
                 activeTab === "code"
                   ? "border-b-2 border-primary text-foreground"
                   : "border-b-2 border-b-transparent text-muted-foreground hover:text-foreground"
