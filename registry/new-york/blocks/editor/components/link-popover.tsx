@@ -40,7 +40,9 @@ export function LinkPopover({
 
   return (
     <Popover open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <PopoverTrigger render={<div />}>{trigger}</PopoverTrigger>
+      <PopoverTrigger nativeButton={false} render={<div />}>
+        {trigger}
+      </PopoverTrigger>
       <PopoverPopup className="w-80" side="bottom" align="start">
         <form className="space-y-3" onSubmit={handleSubmit}>
           <div>

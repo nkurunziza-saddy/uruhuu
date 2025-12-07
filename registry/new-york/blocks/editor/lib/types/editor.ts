@@ -15,6 +15,7 @@ export interface EditorProps {
   maxHeight?: string;
   showToolbar?: boolean;
   showFloatingToolbar?: boolean;
+  enableSpeechToText?: boolean;
   readOnly?: boolean;
   autoFocus?: boolean;
   onChange?: (value: string) => void;

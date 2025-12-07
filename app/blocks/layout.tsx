@@ -14,7 +14,7 @@ export default function BlocksLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen">
+    <div className="">
       <div className="cpx space-y-2 py-5">
         <h1 className="font-bold font-heading text-4xl">Blocks</h1>
         <p className="text-muted-foreground text-sm">
@@ -26,7 +26,6 @@ export default function BlocksLayout({
         <div className="flex flex-wrap gap-5">
           <Link href={"/blocks"}>Featured</Link>
           <Link href={"/blocks/editor"}>Text editor</Link>
-          <Link href={"/blocks/forms"}>Forms</Link>
         </div>
       </div>
       <BorderSeparator />

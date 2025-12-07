@@ -139,6 +139,7 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "input" }),
     },
     example: <Input placeholder="Enter text..." />,
+    fullWidth: true,
   },
   {
     id: "card",
@@ -150,18 +151,17 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "card" }),
     },
     example: (
-      <div className="w-full">
-        <Card>
-          <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card description</CardDescription>
-          </CardHeader>
-          <CardPanel>
-            <p className="text-sm">Card content goes here.</p>
-          </CardPanel>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>Card description</CardDescription>
+        </CardHeader>
+        <CardPanel>
+          <p className="text-sm">Card content goes here.</p>
+        </CardPanel>
+      </Card>
     ),
+    fullWidth: true,
   },
   {
     id: "checkbox",
@@ -272,6 +272,7 @@ export const COMPONENTS = [
         </SelectPopup>
       </Select>
     ),
+    fullWidth: true,
   },
   {
     id: "textarea",
@@ -289,6 +290,7 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "textarea" }),
     },
     example: <Textarea />,
+    fullWidth: true,
   },
   {
     id: "badge",
@@ -403,6 +405,7 @@ export const COMPONENTS = [
         </Alert>
       </div>
     ),
+    fullWidth: true,
   },
   {
     id: "tabs",
@@ -423,6 +426,7 @@ export const COMPONENTS = [
         <TabsContent value="features">Features content</TabsContent>
       </Tabs>
     ),
+    fullWidth: true,
   },
   {
     id: "accordion",
@@ -457,6 +461,7 @@ export const COMPONENTS = [
         </AccordionItem>
       </Accordion>
     ),
+    fullWidth: true,
   },
   {
     id: "separator",
@@ -474,6 +479,7 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "separator" }),
     },
     example: <Separator />,
+    fullWidth: true,
   },
   {
     id: "sheet",
@@ -513,6 +519,7 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "progress" }),
     },
     example: <Progress value={33} />,
+    fullWidth: true,
   },
   {
     id: "skeleton",
@@ -710,5 +717,6 @@ export const COMPONENTS = [
       bun: getInstallCommand({ packageManager: "bun", component: "meter" }),
     },
     example: <Meter value={30} />,
+    fullWidth: true,
   },
 ];

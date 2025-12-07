@@ -90,13 +90,17 @@ const toolbarReducer = (state: ToolbarState, action: Action): ToolbarState => {
   }
 };
 
-export function Toolbar() {
+export function Toolbar({
+  enableSpeechToText = false,
+}: {
+  enableSpeechToText?: boolean;
+}) {
   const [editor] = useLexicalComposerContext();
   const [toolbarState, dispatch] = useReducer(toolbarReducer, initialState);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showTableDialog, setShowTableDialog] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
-  const isSpeechToTextActive = useSpeechToTextState();
+  const { isListening: isSpeechToTextActive } = useSpeechToTextState();
 
   const updateToolbar = useCallback(() => {
     editor.read(() => {
@@ -356,19 +360,24 @@ export function Toolbar() {
 
       <AlignButtons />
 
-      <Separator />
-
-      <ToolbarButton
-        icon={isSpeechToTextActive ? MicOff : Mic}
-        isActive={isSpeechToTextActive}
-        onClick={() => {
-          const event = new CustomEvent("toggle-speech-to-text");
-          window.dispatchEvent(event);
-        }}
-        title={
-          isSpeechToTextActive ? "Stop Speech to Text" : "Start Speech to Text"
-        }
-      />
+      {enableSpeechToText && (
+        <>
+          <Separator />
+          <ToolbarButton
+            icon={isSpeechToTextActive ? MicOff : Mic}
+            isActive={isSpeechToTextActive}
+            onClick={() => {
+              const event = new CustomEvent("toggle-speech-to-text");
+              window.dispatchEvent(event);
+            }}
+            title={
+              isSpeechToTextActive
+                ? "Stop Speech to Text"
+                : "Start Speech to Text"
+            }
+          />
+        </>
+      )}
 
       <TableDialog
         isOpen={showTableDialog}

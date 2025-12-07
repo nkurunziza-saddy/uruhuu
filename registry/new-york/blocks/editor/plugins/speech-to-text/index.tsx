@@ -1,26 +1,78 @@
 "use client";
+
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $createParagraphNode,
   $getRoot,
   $getSelection,
   $isRangeSelection,
+  $isTextNode,
+  REDO_COMMAND,
+  UNDO_COMMAND,
 } from "lexical";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/registry/new-york/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/registry/new-york/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/registry/new-york/ui/tooltip";
+
+// ==================== Type Definitions ====================
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionResult {
+  readonly isFinal: boolean;
+  readonly length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error:
+    | "no-speech"
+    | "aborted"
+    | "audio-capture"
+    | "network"
+    | "not-allowed"
+    | "service-not-allowed"
+    | "bad-grammar"
+    | "language-not-supported";
+  readonly message: string;
+}
 
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
+  maxAlternatives: number;
   start(): void;
   stop(): void;
   abort(): void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onend: () => void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  onspeechstart: (() => void) | null;
+  onspeechend: (() => void) | null;
+  onaudiostart: (() => void) | null;
+  onaudioend: (() => void) | null;
 }
 
 interface SpeechRecognitionConstructor {
@@ -34,23 +86,59 @@ declare global {
   }
 }
 
-let globalIsListening = false;
-const listeners = new Set<(isListening: boolean) => void>();
+// ==================== Voice Commands ====================
 
-function setGlobalIsListening(value: boolean) {
-  globalIsListening = value;
-  listeners.forEach((listener) => listener(value));
+const VOICE_COMMANDS: Record<string, string> = {
+  "new line": "\n",
+  newline: "\n",
+  "new paragraph": "\n\n",
+  period: ".",
+  "full stop": ".",
+  comma: ",",
+  "question mark": "?",
+  "exclamation mark": "!",
+  "exclamation point": "!",
+  colon: ":",
+  semicolon: ";",
+  "open quote": '"',
+  "close quote": '"',
+  "open parenthesis": "(",
+  "close parenthesis": ")",
+  dash: "-",
+  hyphen: "-",
+};
+
+// ==================== Global State Management ====================
+
+let globalIsListening = false;
+let globalIsProcessing = false;
+const listeners = new Set<
+  (state: { isListening: boolean; isProcessing: boolean }) => void
+>();
+
+function setGlobalState(isListening: boolean, isProcessing: boolean) {
+  globalIsListening = isListening;
+  globalIsProcessing = isProcessing;
+  listeners.forEach((listener) => listener({ isListening, isProcessing }));
 }
 
 export function useSpeechToTextState() {
-  const [isListening, setIsListening] = useState(globalIsListening);
+  const [state, setState] = useState({
+    isListening: globalIsListening,
+    isProcessing: globalIsProcessing,
+  });
 
   useEffect(() => {
-    // Set initial state
-    setIsListening(globalIsListening);
-    
-    const listener = (value: boolean) => {
-      setIsListening(value);
+    setState({
+      isListening: globalIsListening,
+      isProcessing: globalIsProcessing,
+    });
+
+    const listener = (newState: {
+      isListening: boolean;
+      isProcessing: boolean;
+    }) => {
+      setState(newState);
     };
     listeners.add(listener);
     return () => {
@@ -58,187 +146,412 @@ export function useSpeechToTextState() {
     };
   }, []);
 
-  return isListening;
+  return state;
 }
+
+// ==================== Text Processing Utilities ====================
+
+function capitalizeFirstLetter(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function formatTranscript(
+  transcript: string,
+  isStartOfSentence: boolean
+): string {
+  let result = transcript.trim();
+
+  const lowerResult = result.toLowerCase();
+  for (const [command, replacement] of Object.entries(VOICE_COMMANDS)) {
+    if (lowerResult === command) {
+      return replacement;
+    }
+  }
+
+  if (isStartOfSentence && result.length > 0) {
+    result = capitalizeFirstLetter(result);
+  }
+
+  return result;
+}
+
+function isAtSentenceStart(text: string): boolean {
+  if (!text || text.length === 0) return true;
+  const trimmed = text.trimEnd();
+  if (trimmed.length === 0) return true;
+  const lastChar = trimmed[trimmed.length - 1];
+  return [".", "!", "?", "\n"].includes(lastChar);
+}
+
+// ==================== Main Plugin Component ====================
 
 export default function SpeechToTextPlugin() {
   const [editor] = useLexicalComposerContext();
-  const [isListening, setIsListening] = useState(globalIsListening);
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const interimTranscriptRef = useRef<string>("");
-  const isAbortingRef = useRef(false);
-  const shouldBeListeningRef = useRef(false);
+  const [interimText, setInterimText] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const isRunningRef = useRef(false);
+  const shouldBeListeningRef = useRef(false);
+  const isRestartingRef = useRef(false);
+  const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearTimeouts = useCallback(() => {
+    if (restartTimeoutRef.current) {
+      clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
+    }
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
+  }, []);
+
+  // Insert text into the editor - simplified and more robust
+  const insertTextIntoEditor = useCallback(
+    (text: string) => {
+      if (!text.trim()) return;
+
+      editor.update(() => {
+        // First, ensure we have a valid selection
+        let selection = $getSelection();
+
+        // If no selection, create one at the end of the document
+        if (!selection || !$isRangeSelection(selection)) {
+          const root = $getRoot();
+          let lastChild = root.getLastChild();
+
+          // If root is empty, create a paragraph
+          if (!lastChild) {
+            const paragraph = $createParagraphNode();
+            root.append(paragraph);
+            lastChild = paragraph;
+          }
+
+          // Select at the end
+          lastChild.selectEnd();
+          selection = $getSelection();
+        }
+
+        if (!$isRangeSelection(selection)) {
+          console.warn("Could not get a valid selection");
+          return;
+        }
+
+        // Determine if we're at the start of a sentence
+        let isStartOfSentence = true;
+        const anchor = selection.anchor;
+        const anchorNode = anchor.getNode();
+
+        if ($isTextNode(anchorNode)) {
+          const textContent = anchorNode.getTextContent();
+          const offset = anchor.offset;
+          const textBefore = textContent.slice(0, offset);
+          isStartOfSentence = isAtSentenceStart(textBefore);
+        } else {
+          // Check if there's any text in the root
+          const root = $getRoot();
+          const allText = root.getTextContent();
+          isStartOfSentence = isAtSentenceStart(allText);
+        }
+
+        // Format and insert
+        const formattedText = formatTranscript(text, isStartOfSentence);
+        const textToInsert = formattedText + " ";
+
+        selection.insertText(textToInsert);
+      });
+    },
+    [editor]
+  );
+
+  // Handle editor commands (undo/redo)
+  const handleEditorCommand = useCallback(
+    (command: string): boolean => {
+      const lowerCommand = command.toLowerCase().trim();
+
+      if (lowerCommand === "undo") {
+        editor.dispatchCommand(UNDO_COMMAND, undefined);
+        setStatusMessage("Undo");
+        setTimeout(() => setStatusMessage(""), 1500);
+        return true;
+      }
+
+      if (lowerCommand === "redo") {
+        editor.dispatchCommand(REDO_COMMAND, undefined);
+        setStatusMessage("Redo");
+        setTimeout(() => setStatusMessage(""), 1500);
+        return true;
+      }
+
+      return false;
+    },
+    [editor]
+  );
+
+  // Start recognition safely
+  const startRecognition = useCallback(() => {
+    if (!recognitionRef.current) return false;
+
+    // Don't start if already running
+    if (isRunningRef.current) {
+      console.debug("Recognition already running, skipping start");
+      return true;
+    }
+
+    try {
+      recognitionRef.current.start();
+      isRunningRef.current = true;
+      return true;
+    } catch (error) {
+      // Check if error is because it's already running
+      if (error instanceof Error && error.message.includes("already started")) {
+        console.debug("Recognition was already started");
+        isRunningRef.current = true;
+        return true;
+      }
+      console.error("Failed to start recognition:", error);
+      isRunningRef.current = false;
+      return false;
+    }
+  }, []);
+
+  // Stop recognition safely
+  const stopRecognition = useCallback(() => {
+    if (!recognitionRef.current) return;
+
+    shouldBeListeningRef.current = false;
+    clearTimeouts();
+
+    try {
+      recognitionRef.current.stop();
+    } catch {
+      // Ignore errors when stopping
+    }
+
+    // Note: isRunningRef will be set to false in the onend handler
+  }, [clearTimeouts]);
+
+  // Initialize speech recognition
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (SpeechRecognition) {
-      setIsSupported(true);
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = "";
-        let finalTranscript = "";
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript + " ";
-          } else {
-            interimTranscript += transcript;
-          }
-        }
-
-        interimTranscriptRef.current = interimTranscript;
-
-        if (finalTranscript) {
-          editor.update(() => {
-            const selection = $getSelection();
-            if ($isRangeSelection(selection)) {
-              // Insert final transcript at cursor position
-              selection.insertText(finalTranscript.trim() + " ");
-            } else {
-              // If no selection, get selection again and insert
-              const newSelection = $getSelection();
-              if (newSelection) {
-                newSelection.insertText(finalTranscript.trim() + " ");
-              } else {
-                // Fallback: get root and insert at end
-                const root = $getRoot();
-                const lastChild = root.getLastChild();
-                if (lastChild) {
-                  lastChild.selectEnd();
-                  const endSelection = $getSelection();
-                  if (endSelection && $isRangeSelection(endSelection)) {
-                    endSelection.insertText(finalTranscript.trim() + " ");
-                  }
-                }
-              }
-            }
-          });
-          interimTranscriptRef.current = "";
-        }
-      };
-
-      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        // Ignore "aborted" errors - they're expected when we intentionally stop
-        if (event.error === "aborted" || isAbortingRef.current) {
-          return;
-        }
-        
-        // These are common errors, don't stop listening
-        if (event.error === "no-speech" || event.error === "audio-capture") {
-          return;
-        }
-        
-        // Log other errors but don't spam console
-        if (event.error !== "network") {
-          console.warn("Speech recognition error:", event.error);
-        }
-        
-        shouldBeListeningRef.current = false;
-        setIsListening(false);
-        setGlobalIsListening(false);
-        try {
-          recognition.stop();
-        } catch (e) {
-          // Ignore errors when stopping
-        }
-      };
-
-      recognition.onend = () => {
-        // Only restart if we're supposed to be listening and not aborting
-        if (shouldBeListeningRef.current && !isAbortingRef.current && recognitionRef.current) {
-          // Small delay before restarting to avoid rapid restarts
-          setTimeout(() => {
-            if (shouldBeListeningRef.current && recognitionRef.current && !isAbortingRef.current) {
-              try {
-                recognitionRef.current.start();
-              } catch (error) {
-                // If restart fails, stop listening
-                shouldBeListeningRef.current = false;
-                setIsListening(false);
-                setGlobalIsListening(false);
-              }
-            }
-          }, 100);
-        }
-      };
-
-      recognitionRef.current = recognition;
+    if (!SpeechRecognition) {
+      console.warn("Speech recognition is not supported in this browser");
+      return;
     }
 
-    return () => {
-      if (recognitionRef.current) {
-        isAbortingRef.current = true;
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {
-          // Ignore stop errors
+    setIsSupported(true);
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+    recognition.maxAlternatives = 3;
+
+    // Handle results
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      // Reset silence timeout on any result
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+      }
+
+      let interimTranscript = "";
+      let finalTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        const transcript = result[0].transcript;
+
+        if (result.isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
         }
-        try {
-          recognitionRef.current.abort();
-        } catch (e) {
-          // Ignore abort errors
+      }
+
+      // Update interim text display
+      setInterimText(interimTranscript);
+
+      // Process final transcript
+      if (finalTranscript.trim()) {
+        setIsProcessing(true);
+        setGlobalState(true, true);
+
+        const trimmedTranscript = finalTranscript.trim();
+
+        // Check for editor commands first
+        if (!handleEditorCommand(trimmedTranscript)) {
+          // Not a command, insert as text
+          insertTextIntoEditor(trimmedTranscript);
         }
-        isAbortingRef.current = false;
+
+        // Clear interim after final result
+        setInterimText("");
+        setIsProcessing(false);
+        setGlobalState(globalIsListening, false);
+      }
+
+      // Set silence timeout - restart recognition if stuck
+      silenceTimeoutRef.current = setTimeout(() => {
+        if (shouldBeListeningRef.current && recognitionRef.current) {
+          console.debug("Silence timeout - restarting recognition");
+          isRestartingRef.current = true;
+          try {
+            recognitionRef.current.stop();
+          } catch {}
+        }
+      }, 8000);
+    };
+
+    recognition.onspeechstart = () => {
+      setStatusMessage("Listening...");
+    };
+    recognition.onspeechend = () => {
+      setStatusMessage("");
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.debug("Speech recognition error:", event.error);
+
+      switch (event.error) {
+        case "aborted":
+          return;
+
+        case "no-speech":
+          setStatusMessage("No speech detected");
+          setTimeout(() => setStatusMessage(""), 2000);
+          return;
+
+        case "audio-capture":
+          setStatusMessage("Microphone error");
+          setTimeout(() => setStatusMessage(""), 2000);
+          return;
+
+        case "network":
+          setStatusMessage("Network error");
+          setTimeout(() => setStatusMessage(""), 2000);
+          return;
+
+        case "not-allowed":
+        case "service-not-allowed":
+          setStatusMessage("Microphone access denied");
+          shouldBeListeningRef.current = false;
+          isRunningRef.current = false;
+          setIsListening(false);
+          setGlobalState(false, false);
+          setTimeout(() => setStatusMessage(""), 3000);
+          return;
+
+        default:
+          setStatusMessage(`Error: ${event.error}`);
+          setTimeout(() => setStatusMessage(""), 3000);
       }
     };
-  }, [editor, isListening]);
 
+    // Handle recognition end - this is where we track actual running state
+    recognition.onend = () => {
+      console.debug("Recognition ended");
+      isRunningRef.current = false;
+
+      // Clear interim text
+      setInterimText("");
+
+      // Restart if we should still be listening
+      if (shouldBeListeningRef.current) {
+        isRestartingRef.current = true;
+
+        restartTimeoutRef.current = setTimeout(() => {
+          isRestartingRef.current = false;
+
+          if (shouldBeListeningRef.current && recognitionRef.current) {
+            try {
+              recognitionRef.current.start();
+              isRunningRef.current = true;
+              console.debug("Recognition restarted");
+            } catch (error) {
+              console.debug("Failed to restart recognition:", error);
+              // If it fails because already running, that's fine
+              if (
+                error instanceof Error &&
+                error.message.includes("already started")
+              ) {
+                isRunningRef.current = true;
+              } else {
+                shouldBeListeningRef.current = false;
+                setIsListening(false);
+                setGlobalState(false, false);
+              }
+            }
+          }
+        }, 300);
+      } else {
+        // Fully stopped
+        setIsListening(false);
+        setGlobalState(false, false);
+      }
+    };
+
+    recognitionRef.current = recognition;
+
+    // Cleanup
+    return () => {
+      clearTimeouts();
+      shouldBeListeningRef.current = false;
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {
+          // Ignore
+        }
+      }
+      isRunningRef.current = false;
+    };
+  }, [insertTextIntoEditor, handleEditorCommand, clearTimeouts]);
+
+  // Toggle listening state
   const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return;
 
-    const newState = !isListening;
-    shouldBeListeningRef.current = newState;
+    // Check current actual state, not just React state
+    const currentlyRunning =
+      isRunningRef.current || shouldBeListeningRef.current;
 
-    if (newState) {
+    if (!currentlyRunning) {
       // Starting
-      isAbortingRef.current = false;
-      try {
-        recognitionRef.current.start();
+      clearTimeouts();
+      isRestartingRef.current = false;
+      shouldBeListeningRef.current = true;
+
+      const started = startRecognition();
+      if (started) {
         setIsListening(true);
-        setGlobalIsListening(true);
-      } catch (error) {
-        console.error("Failed to start speech recognition:", error);
+        setGlobalState(true, false);
+        setStatusMessage("Starting...");
+        setTimeout(() => setStatusMessage(""), 1500);
+      } else {
         shouldBeListeningRef.current = false;
         setIsListening(false);
-        setGlobalIsListening(false);
+        setGlobalState(false, false);
+        setStatusMessage("Failed to start");
+        setTimeout(() => setStatusMessage(""), 2000);
       }
     } else {
       // Stopping
-      isAbortingRef.current = true;
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {
-        // Ignore stop errors
-      }
+      stopRecognition();
+      setInterimText("");
+      setStatusMessage("");
       setIsListening(false);
-      setGlobalIsListening(false);
-      // Reset abort flag after a short delay
-      setTimeout(() => {
-        isAbortingRef.current = false;
-      }, 200);
+      setGlobalState(false, false);
     }
-  }, [isListening]);
+  }, [clearTimeouts, startRecognition, stopRecognition]);
 
-  // Sync local state with global state
-  useEffect(() => {
-    const listener = (value: boolean) => {
-      setIsListening(value);
-    };
-    listeners.add(listener);
-    return () => {
-      listeners.delete(listener);
-    };
-  }, []);
-
-  // Listen for toolbar button clicks
+  // Listen for external toggle events (from toolbar)
   useEffect(() => {
     const handleToggle = () => {
       toggleListening();
@@ -250,12 +563,42 @@ export default function SpeechToTextPlugin() {
     };
   }, [toggleListening]);
 
+  // Sync local state with global state
+  useEffect(() => {
+    const listener = (state: {
+      isListening: boolean;
+      isProcessing: boolean;
+    }) => {
+      setIsListening(state.isListening);
+      setIsProcessing(state.isProcessing);
+    };
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  }, []);
+
   if (!isSupported) {
     return null;
   }
 
   return createPortal(
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+      {/* Status/Interim text display */}
+      {(statusMessage || interimText) && (
+        <div className="bg-background/95 backdrop-blur-sm border rounded-lg px-3 py-2 shadow-lg max-w-xs">
+          {statusMessage && (
+            <div className="text-sm text-muted-foreground">{statusMessage}</div>
+          )}
+          {interimText && (
+            <div className="text-sm text-muted-foreground/70 italic">
+              {interimText}...
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Main button */}
       <Tooltip>
         <TooltipTrigger
           render={
@@ -263,14 +606,16 @@ export default function SpeechToTextPlugin() {
               onClick={toggleListening}
               size="icon"
               variant={isListening ? "default" : "outline"}
-              className={`rounded-full shadow-lg ${
+              className={`rounded-full shadow-lg transition-all duration-300 ${
                 isListening
-                  ? "bg-red-500 hover:bg-red-600 animate-pulse"
-                  : "bg-background"
-              }`}
+                  ? "bg-destructive hover:bg-destructive/90 scale-110"
+                  : "bg-background hover:bg-accent"
+              } ${isProcessing ? "ring-2 ring-primary ring-offset-2" : ""}`}
               aria-label={isListening ? "Stop recording" : "Start recording"}
             >
-              {isListening ? (
+              {isProcessing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : isListening ? (
                 <MicOff className="h-4 w-4" />
               ) : (
                 <Mic className="h-4 w-4" />
@@ -278,12 +623,18 @@ export default function SpeechToTextPlugin() {
             </Button>
           }
         />
-        <TooltipContent>
-          <p>{isListening ? "Stop speech-to-text" : "Start speech-to-text"}</p>
+        <TooltipContent side="left">
+          <p>
+            {isListening ? "Stop speech-to-text" : "Start speech-to-text"}
+            {isListening && (
+              <span className="block text-xs text-muted-foreground mt-1">
+                Say &quot;undo&quot; or &quot;redo&quot; for commands
+              </span>
+            )}
+          </p>
         </TooltipContent>
       </Tooltip>
     </div>,
     document.body
   );
 }
-

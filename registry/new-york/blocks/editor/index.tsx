@@ -80,10 +80,12 @@ function EditorContent({
 
 function EditorPlugins({
   showFloatingToolbar = true,
+  enableSpeechToText = false,
   customPlugins = [],
   onChange = () => {},
 }: {
   showFloatingToolbar?: boolean;
+  enableSpeechToText?: boolean;
   customPlugins?: React.ComponentType[];
   onChange: (
     editorState: EditorState,
@@ -112,7 +114,7 @@ function EditorPlugins({
       />
       <TableHoverActionsPlugin />
       <SlashCommandPlugin />
-      <SpeechToTextPlugin />
+      {enableSpeechToText && <SpeechToTextPlugin />}
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       <OnChangePlugin onChange={onChange} />
       {showFloatingToolbar && <FloatingToolbar />}
@@ -129,6 +131,7 @@ export function Editor({
   maxHeight,
   showToolbar = false,
   showFloatingToolbar = true,
+  enableSpeechToText = false,
   readOnly = false,
   onChange,
   plugins = [],
@@ -158,7 +161,7 @@ export function Editor({
     <div className={cn("w-full", className)}>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="relative overflow-hidden w-full">
-          {showToolbar && <Toolbar />}
+          {showToolbar && <Toolbar enableSpeechToText={enableSpeechToText} />}
 
           <EditorContent
             maxHeight={maxHeight}
@@ -172,6 +175,7 @@ export function Editor({
             customPlugins={plugins}
             onChange={handleEditorChange}
             showFloatingToolbar={showFloatingToolbar}
+            enableSpeechToText={enableSpeechToText}
           />
         </div>
       </LexicalComposer>

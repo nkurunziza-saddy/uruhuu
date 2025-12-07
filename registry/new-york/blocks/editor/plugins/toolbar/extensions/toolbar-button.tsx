@@ -31,13 +31,12 @@ export function ToolbarToggleButton({
   );
 }
 
-interface ToolbarButtonProps
-  extends React.ComponentProps<typeof Button>,
-    Partial<VariantProps<typeof buttonVariants>> {
-  isActive?: boolean;
-  icon?: LucideIcon;
-  children?: React.ReactNode;
-}
+type ToolbarButtonProps = React.ComponentProps<typeof Button> &
+  Partial<VariantProps<typeof buttonVariants>> & {
+    isActive?: boolean;
+    icon?: LucideIcon;
+    children?: React.ReactNode;
+  };
 
 export const ToolbarButton = React.forwardRef<
   HTMLButtonElement,
@@ -53,7 +52,7 @@ export const ToolbarButton = React.forwardRef<
       size = "icon-sm",
       ...props
     },
-    ref,
+    ref
   ) => {
     return (
       <Button
@@ -67,7 +66,7 @@ export const ToolbarButton = React.forwardRef<
         {Icon && <Icon className="size-4" />}
       </Button>
     );
-  },
+  }
 );
 
 ToolbarButton.displayName = "ToolbarButton";

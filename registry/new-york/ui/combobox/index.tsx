@@ -16,11 +16,9 @@ const ComboboxContext = React.createContext<{
   multiple: false,
 });
 
-function Combobox<
-  ItemValue,
-  SelectedValue = ItemValue,
-  Multiple extends boolean | undefined = false,
->(props: ComboboxPrimitive.Root.Props<ItemValue, SelectedValue, Multiple>) {
+function Combobox<ItemValue, Multiple extends boolean | undefined = undefined>(
+  props: ComboboxPrimitive.Root.Props<ItemValue, Multiple>
+) {
   const chipsRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <ComboboxContext.Provider value={{ chipsRef, multiple: !!props.multiple }}>
@@ -43,7 +41,6 @@ function ComboboxInput({
   const { multiple } = React.useContext(ComboboxContext);
   const sizeValue = (size ?? "default") as "sm" | "default" | "lg" | number;
 
-  // multiple mode
   if (multiple) {
     return (
       <ComboboxPrimitive.Input
@@ -51,7 +48,7 @@ function ComboboxInput({
         className={cn(
           "min-w-12 flex-1 text-base/5 outline-none sm:text-sm [[data-slot=combobox-chip]+&]:ps-0.5",
           sizeValue === "sm" ? "ps-1.5" : "ps-2",
-          className,
+          className
         )}
         data-size={typeof sizeValue === "string" ? sizeValue : undefined}
         size={typeof sizeValue === "number" ? sizeValue : undefined}
@@ -59,7 +56,7 @@ function ComboboxInput({
       />
     );
   }
-  // single mode
+
   return (
     <div className="relative w-full has-disabled:opacity-64">
       <ComboboxPrimitive.Input
@@ -68,7 +65,7 @@ function ComboboxInput({
           sizeValue === "sm"
             ? "has-[+[data-slot=combobox-trigger],+[data-slot=combobox-clear]]:*:data-[slot=combobox-input]:pe-6.5"
             : "has-[+[data-slot=combobox-trigger],+[data-slot=combobox-clear]]:*:data-[slot=combobox-input]:pe-7",
-          className,
+          className
         )}
         render={<Input size={sizeValue} className="has-disabled:opacity-100" />}
         {...props}
@@ -77,7 +74,7 @@ function ComboboxInput({
         <ComboboxTrigger
           className={cn(
             "absolute top-1/2 inline-flex size-7 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md border border-transparent opacity-72 transition-opacity outline-none hover:opacity-100 has-[+[data-slot=combobox-clear]]:hidden pointer-coarse:after:absolute pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-            sizeValue === "sm" ? "end-0" : "end-0.5",
+            sizeValue === "sm" ? "end-0" : "end-0.5"
           )}
         >
           <ChevronsUpDownIcon />
@@ -87,7 +84,7 @@ function ComboboxInput({
         <ComboboxClear
           className={cn(
             "absolute top-1/2 inline-flex size-7 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md border border-transparent opacity-72 transition-opacity outline-none hover:opacity-100 has-[+[data-slot=combobox-clear]]:hidden pointer-coarse:after:absolute pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-            sizeValue === "sm" ? "end-0" : "end-0.5",
+            sizeValue === "sm" ? "end-0" : "end-0.5"
           )}
         >
           <XIcon />
@@ -133,7 +130,7 @@ function ComboboxPopup({
             data-slot="combobox-popup"
             className={cn(
               "flex max-h-[min(var(--available-height),23rem)] w-(--anchor-width) max-w-(--available-width) flex-col",
-              className,
+              className
             )}
             {...props}
           >
@@ -155,7 +152,7 @@ function ComboboxItem({
       data-slot="combobox-item"
       className={cn(
         "grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 rounded-sm py-1 ps-2 pe-4 text-base outline-none in-data-[side=none]:min-w-[calc(var(--anchor-width)+1.25rem)] data-disabled:pointer-events-none data-disabled:opacity-64 data-highlighted:bg-accent data-highlighted:text-accent-foreground sm:text-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className,
+        className
       )}
       {...props}
     >
@@ -211,7 +208,7 @@ function ComboboxGroupLabel({
     <ComboboxPrimitive.GroupLabel
       className={cn(
         "px-2 py-1.5 text-xs font-medium text-muted-foreground",
-        className,
+        className
       )}
       data-slot="combobox-group-label"
       {...props}
@@ -224,7 +221,7 @@ function ComboboxEmpty({ className, ...props }: ComboboxPrimitive.Empty.Props) {
     <ComboboxPrimitive.Empty
       className={cn(
         "text-center text-sm text-muted-foreground not-empty:p-2",
-        className,
+        className
       )}
       data-slot="combobox-empty"
       {...props}
@@ -253,7 +250,7 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
         data-slot="combobox-list"
         className={cn(
           "not-empty:scroll-py-1 not-empty:px-1 not-empty:py-1 in-data-has-overflow-y:pe-3",
-          className,
+          className
         )}
         {...props}
       />
@@ -280,7 +277,7 @@ function ComboboxStatus({
       data-slot="combobox-status"
       className={cn(
         "px-3 py-2 text-xs font-medium text-muted-foreground empty:m-0 empty:p-0",
-        className,
+        className
       )}
       {...props}
     />
@@ -302,7 +299,7 @@ function ComboboxChips({ className, ...props }: ComboboxPrimitive.Chips.Props) {
       data-slot="combobox-chips"
       className={cn(
         "relative inline-flex min-h-8 w-full flex-wrap gap-1 rounded border border-input bg-background p-1 text-sm outline-none *:min-h-6 focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 has-disabled:pointer-events-none has-disabled:opacity-64 has-aria-invalid:border-destructive/36 focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/16 has-data-[size=lg]:min-h-9 has-data-[size=lg]:*:min-h-7 has-data-[size=sm]:min-h-7 has-data-[size=sm]:*:min-h-5",
-        className,
+        className
       )}
       {...props}
     />

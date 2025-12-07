@@ -12,6 +12,7 @@ import { GithubIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/registry/new-york/libs/utils";
 import { Button } from "@/registry/new-york/ui/button";
+import Sidebar from "@/components/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,14 +37,14 @@ export default function RootLayout({
   return (
     <html className="dark" lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased no-scrollbar`}
       >
         <div className="relative text-foreground/85 flex min-h-screen flex-col overflow-hidden bg-secondary/40 supports-[overflow:clip]:overflow-clip dark:bg-background">
           <header className="border-b border-dashed bg-card dark:bg-card/50">
             <div className="cpx container flex h-14 items-center justify-between py-2">
               <div className="flex gap-10">
                 <Link className="" href="/">
-                  <span className="font-medium">UI</span>
+                  <span className="font-medium">Uruhuu</span>
                 </Link>
                 <div>
                   <Link className="" href="/blocks">
@@ -56,28 +57,15 @@ export default function RootLayout({
                 <Button
                   render={
                     <Link
-                      aria-label="x/twitter"
-                      href={TWITTER_URL}
-                      target="_blank"
-                    />
-                  }
-                  size="icon-sm"
-                  variant="outline"
-                >
-                  <XIcon />
-                </Button>
-                <Button
-                  render={
-                    <Link
                       aria-label="github"
                       href={GITHUB_URL}
                       target="_blank"
                     />
                   }
-                  size="icon-sm"
+                  size="xs"
                   variant="outline"
                 >
-                  <GithubIcon />
+                  Github
                 </Button>
               </div>
             </div>
@@ -91,22 +79,6 @@ export default function RootLayout({
           >
             {children}
           </main>
-          <footer className="border-t border-dashed bg-card dark:bg-card/50">
-            <div className="cpx container flex items-center justify-between py-6 text-xs md:text-sm">
-              <p className="flex items-center gap-1 text-muted-foreground">
-                <span>Built by</span>
-                <Link
-                  aria-label="x/twitter"
-                  className="font-medium text-foreground/90 hover:text-foreground hover:underline"
-                  href={AUTHOR_URL}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Nkurunziza Saddy
-                </Link>
-              </p>
-            </div>
-          </footer>
         </div>
       </body>
     </html>
