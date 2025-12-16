@@ -91,8 +91,8 @@ export default function EditorPage() {
 
               <section>
                 <h2 className="text-xl font-bold mb-4">Props</h2>
-                <div className="rounded-lg border overflow-hidden">
-                  <table className="w-full text-sm">
+                <div className="rounded-lg border overflow-x-auto">
+                  <table className="w-full text-sm min-w-[600px]">
                     <thead className="bg-muted/50">
                       <tr>
                         <th className="text-left py-2 px-4 font-medium">
@@ -284,7 +284,7 @@ export default function EditorPage() {
 
               <section>
                 <h2 className="text-xl font-bold mb-4">Features</h2>
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div className="p-4 border rounded-lg">
                     <h3 className="font-semibold mb-2">Rich Text Editing</h3>
                     <p className="text-sm text-muted-foreground">
@@ -342,7 +342,7 @@ export default function EditorPage() {
                   When speech-to-text is enabled, you can use these voice
                   commands:
                 </p>
-                <div className="grid gap-2 md:grid-cols-3">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {[
                     { command: '"new line"', result: "Insert line break" },
                     { command: '"new paragraph"', result: "Insert paragraph" },
@@ -367,7 +367,7 @@ export default function EditorPage() {
 
               <section>
                 <h2 className="text-xl font-bold mb-4">Keyboard Shortcuts</h2>
-                <div className="grid gap-2 md:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2">
                   {[
                     { keys: "Ctrl/Cmd + B", action: "Bold" },
                     { keys: "Ctrl/Cmd + I", action: "Italic" },

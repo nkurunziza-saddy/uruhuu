@@ -1,3 +1,4 @@
+import { MobileSidebar } from "@/components/mobile-sidebar";
 import Sidebar from "@/components/sidebar";
 
 export default function DocsLayout({
@@ -7,9 +8,14 @@ export default function DocsLayout({
 }) {
   return (
     <div className="flex h-[calc(100vh-3.5rem-1px)]">
-      <Sidebar />
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
       <main className="flex-1 overflow-auto">
-        <div className="p-8 max-w-3xl">{children}</div>
+        <div className="md:hidden sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-dashed px-4 py-3">
+          <MobileSidebar />
+        </div>
+        <div className="p-4 md:p-8 max-w-3xl">{children}</div>
       </main>
     </div>
   );
