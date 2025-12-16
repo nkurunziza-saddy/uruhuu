@@ -24,7 +24,9 @@ export default function DocsLayout({
         </div>
 
         <div className="flex">
-          <div className="max-w-3xl flex-1 p-4 md:p-8">{children}</div>
+          <div className="max-w-3xl flex-1 p-4 md:p-8 overflow-x-hidden">
+            {children}
+          </div>
           <div className="hidden lg:block border-l border-dashed w-44">
             <DesktopTableOfContents />
           </div>

@@ -70,7 +70,7 @@ export async function ComponentPage({
           <h2 className="text-sm font-semibold mb-3 text-muted-foreground tracking-wide">
             Key Props
           </h2>
-          <div className="rounded-lg border overflow-hidden">
+          <div className="rounded-lg border overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
@@ -81,7 +81,7 @@ export async function ComponentPage({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y ">
                 {component.props.map(async (prop) => (
                   <tr key={prop.name}>
                     <td className="px-4 py-2 font-mono text-xs text-primary">

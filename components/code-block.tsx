@@ -30,7 +30,7 @@ export async function HighlightCodeBlock({
 }: CodeBlockProps) {
   return (
     <div
-      className="rounded-lg border overflow-hidden [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:bg-transparent! [&_code]:font-mono"
+      className="rounded-lg border overflow-x-auto [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:bg-transparent! [&_code]:font-mono"
       dangerouslySetInnerHTML={{
         __html: await codeToHtml(code, {
           lang: language,

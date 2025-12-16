@@ -105,7 +105,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(92.191% 0.0001 271.152);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -174,13 +174,13 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/40 rounded-md;
+    @apply bg-muted/60 rounded-xs;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/60;
+    @apply bg-muted/80;
   }
   ::-webkit-scrollbar-thumb:active {
-    @apply bg-muted-foreground/80;
+    @apply bg-muted;
   }
 }
 
